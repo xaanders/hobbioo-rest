@@ -10,7 +10,6 @@ type CreateUserFn = (data: {
   user_type: 1 | 2;
 }) => Promise<Partial<User>>;
 
-type GetUserFn = (id: string) => Promise<Partial<User> | null>;
 
 export const createUserController = (createUser: CreateUserFn): RequestHandler =>
   async (req: Request, res: Response) => {
@@ -28,6 +27,8 @@ export const createUserController = (createUser: CreateUserFn): RequestHandler =
     }
   };
 
+type GetUserFn = (id: string) => Promise<Partial<User> | null>;
+
 export const getUserController = (getUser: GetUserFn): RequestHandler =>
   async (req: Request, res: Response) => {
     const { id } = req.params;
@@ -43,3 +44,26 @@ export const getUserController = (getUser: GetUserFn): RequestHandler =>
     }
   };
 
+type UpdateUserFn = (id: string, data: {
+  id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  user_type: 1 | 2;
+}) => Promise<Partial<User>>;
+
+export const updateUserController = (updateUser: UpdateUserFn): RequestHandler =>
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { first_name, last_name, email, user_type } = req.body;
+    try {
+      const user = await updateUser(id, { id, first_name, last_name, email, user_type });
+      res.status(200).json(user);
+    } catch (error) {
+      if (error instanceof UseCaseError) {
+        res.status(400).json({ error: error.message });
+      } else {
+        res.status(500).json({ error: "Internal server error" });
+      }
+    }
+  }

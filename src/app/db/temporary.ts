@@ -1,4 +1,3 @@
-import { UseCaseError } from "../../shared/error/use-case-error.js";
 import { User } from "../../entities/user.js";
 import { IUserRepository } from "../../gateways/user-repository.js";
 
@@ -8,34 +7,28 @@ export const users = new Map<string, User>();
 // Database operations
 
 export class InMemoryUserRepository implements IUserRepository {
-    async createUser(user: User): Promise<Partial<User>> {
+    async createUser(user: User): Promise<User> {
         users.set(user.id, user);
-        return user.userToJson() as Partial<User>;
+        return user;
     }
 
-    async getUser(id: string): Promise<Partial<User> | null> {
+    async getUser(id: string): Promise<User | null> {
         const user = users.get(id);
-        if (!user) {
-            throw new UseCaseError('User not found');
-        }
-        return user.userToJson() as Partial<User>;
+        
+        return user ?? null;
     }
 
-    async updateUser(id: string, user: Partial<User>): Promise<Partial<User>> {
+    async updateUser(id: string, data: Partial<User>): Promise<User> {
         const existingUser = users.get(id);
-        if (!existingUser) {
-            throw new UseCaseError('User not found');
-        }
     
         const updatedUser = {
             ...existingUser,
-            ...user,
+            ...data,
         };
     
         users.set(id, updatedUser as User);
-        const newUser = updatedUser as User
-    
-        return newUser.userToJson() as Partial<User>;
+        
+        return updatedUser as User;
     }
     
     async deleteUser(id: string): Promise<void> {
