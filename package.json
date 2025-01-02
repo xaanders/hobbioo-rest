@@ -2,12 +2,12 @@
   "name": "hobbioo-rest-api",
   "version": "1.0.0",
   "description": "Rest API application serving Hobbioo Platform",
-  "main": "index.js",
+  "main": "src/app/server.ts",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "set NODE_OPTIONS=--loader ts-node/esm&& ts-node app/server.ts",
-    "dev": "set NODE_OPTIONS=--loader ts-node/esm&& nodemon app/server.ts",
+    "start": "set NODE_OPTIONS=--loader ts-node/esm&& ts-node src/app/server.ts",
+    "dev": "set NODE_OPTIONS=--loader ts-node/esm&& nodemon src/app/server.ts",
     "build": "tsc",
     "serve": "node dist/app/server.js"
   },
@@ -15,11 +15,13 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.3",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "sanitize-html": "^2.14.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
     "@types/node": "^22.10.2",
+    "@types/sanitize-html": "^2.13.0",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.2"
