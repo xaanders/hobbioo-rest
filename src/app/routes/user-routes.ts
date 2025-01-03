@@ -13,10 +13,12 @@ const router = Router();
 
 // Compose the create user flow
 const createUserFlow = createUser({ userRepository, helpers });
-const getUserFlow = getUser({ userRepository });
 const createUserHandler = createUserController(createUserFlow);
+
+const getUserFlow = getUser({ userRepository });
 const getUserHandler = getUserController(getUserFlow);
-const updateUserFlow = updateUser({ userRepository });
+
+const updateUserFlow = updateUser({ userRepository, helpers });
 const updateUserHandler = updateUserController(updateUserFlow);
 
 router.post("/", createUserHandler);

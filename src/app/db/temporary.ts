@@ -14,23 +14,20 @@ export class InMemoryUserRepository implements IUserRepository {
 
     async getUser(id: string): Promise<User | null> {
         const user = users.get(id);
-        
+
         return user ?? null;
     }
 
-    async updateUser(id: string, data: Partial<User>): Promise<User> {
-        const existingUser = users.get(id);
-    
-        const updatedUser = {
-            ...existingUser,
-            ...data,
-        };
-    
-        users.set(id, updatedUser as User);
-        
-        return updatedUser as User;
+    async updateUser(id: string, data: User): Promise<User> {
+            this.deleteUser(id)
+
+            users.set(id, data);
+
+            return data as User;
+       
+
     }
-    
+
     async deleteUser(id: string): Promise<void> {
         users.delete(id);
     }
