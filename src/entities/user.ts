@@ -79,7 +79,7 @@ export class User {
         });
     }
 
-    validate(data: { id: string; first_name: string; last_name: string; email: string; user_type: 1 | 2 }) {
+    validate(data: { id?: string; first_name?: string; last_name?: string; email?: string; user_type?: 1 | 2 }) {
         if (!data.first_name) {
             throw new ValidationError("First name is required");
         }
@@ -100,8 +100,25 @@ export class User {
         }
     }
 
+    validateUpdate(data: Partial<{ first_name: string; last_name: string; email: string; user_type: 1 | 2 }>) {
+        if (data.first_name && data.first_name.trim() === "") {
+            throw new ValidationError("First name cannot be empty");
+        }
+        if (data.last_name && data.last_name.trim() === "") {
+            throw new ValidationError("Last name cannot be empty");
+        }
+        if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+            throw new ValidationError("Invalid email format");
+        }
+        if (data.user_type && data.user_type !== 1 && data.user_type !== 2) {
+            throw new ValidationError("Invalid user type");
+        }
+    }
     // Updating the entity with sanitization and validation
     update(data: Partial<{ first_name: string; last_name: string; email: string; user_type: 1 | 2 }>, helpers: IHelpers) {
+        
+        this.validateUpdate(data);
+
         const sanitizedData = {
             ...this,
             ...data
@@ -110,7 +127,6 @@ export class User {
         sanitizedData.last_name = helpers.sanitize(sanitizedData.last_name);
         sanitizedData.email = helpers.sanitize(sanitizedData.email);
 
-        this.validate(sanitizedData);
 
         if (sanitizedData.first_name) this._first_name = sanitizedData.first_name;
         if (sanitizedData.last_name) this._last_name = sanitizedData.last_name;

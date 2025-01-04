@@ -6,6 +6,7 @@ import { InMemoryUserRepository } from "../../app/db/temporary.js";
 import { helpers } from "../../app/helpers/helpers.js";
 import { getUser } from "../../use-cases/get-user.js";
 import { updateUser } from "../../use-cases/update-user.js";
+import { makeExpressCallback } from "../../express-callback/index.js";
 
 const userRepository = new InMemoryUserRepository();
 
@@ -21,9 +22,9 @@ const getUserHandler = getUserController(getUserFlow);
 const updateUserFlow = updateUser({ userRepository, helpers });
 const updateUserHandler = updateUserController(updateUserFlow);
 
-router.post("/", createUserHandler);
-router.get("/:id", getUserHandler);
-router.patch("/:id", updateUserHandler);
+router.post("/", makeExpressCallback(createUserHandler));
+router.get("/:id", makeExpressCallback(getUserHandler));
+router.patch("/:id", makeExpressCallback(updateUserHandler));
 
 export default router;
 

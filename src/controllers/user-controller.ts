@@ -2,6 +2,9 @@
 import { Request, Response, RequestHandler } from "express";
 import { UseCaseError } from "../shared/error/use-case-error.js";
 import { User } from "../entities/user.js";
+import { HttpRequest } from "../express-callback/index.js";
+import { ValidationError } from "../shared/error/validation-error.js";
+import logger from "../shared/logger/index.js";
 
 type CreateUserFn = (data: {
   first_name: string;
@@ -11,36 +14,37 @@ type CreateUserFn = (data: {
 }) => Promise<Partial<User>>;
 
 
-export const createUserController = (createUser: CreateUserFn): RequestHandler =>
-  async (req: Request, res: Response) => {
-    const { first_name, last_name, email, user_type } = req.body;
+export const createUserController = (createUser: CreateUserFn) =>
+  async (httpRequest: HttpRequest) => {
+    const { first_name, last_name, email, user_type } = httpRequest.body;
 
     try {
       const user = await createUser({ first_name, last_name, email, user_type });
-      res.status(201).json(user);
+      return { statusCode: 201, body: user }
     } catch (error) {
-      if (error instanceof UseCaseError) {
-        res.status(400).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: "Internal server error" });
-      }
+      logger.error({ error: 'Error creating user', debug_details: error })
+
+      if (error instanceof UseCaseError)
+        return { statusCode: 400, body: { error: error.message } }
+      else
+        return { statusCode: 500, body: { error: "Internal server error" } }
     }
   };
 
 type GetUserFn = (id: string) => Promise<Partial<User> | null>;
 
-export const getUserController = (getUser: GetUserFn): RequestHandler =>
-  async (req: Request, res: Response) => {
-    const { id } = req.params;
+export const getUserController = (getUser: GetUserFn) =>
+  async (httpRequest: HttpRequest) => {
+    const { id } = httpRequest.params;
     try {
       const user = await getUser(id);
-      res.status(200).json(user);
+      return { statusCode: 200, body: user }
     } catch (error) {
-      if (error instanceof UseCaseError) {
-        res.status(400).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: "Internal server error" });
-      }
+      console.log({ error: 'Error getting user', debug_details: error })
+      if (error instanceof UseCaseError)
+        return { statusCode: 400, body: { error: error.message } }
+      else
+        return { statusCode: 500, body: { error: "Internal server error" } }
     }
   };
 
@@ -52,18 +56,21 @@ type UpdateUserFn = (id: string, data: {
   user_type: 1 | 2;
 }) => Promise<Partial<User>>;
 
-export const updateUserController = (updateUser: UpdateUserFn): RequestHandler =>
-  async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { first_name, last_name, email, user_type } = req.body;
+export const updateUserController = (updateUser: UpdateUserFn) =>
+  async (httpRequest: HttpRequest) => {
+    const { id } = httpRequest.params;
+    const { first_name, last_name, email, user_type } = httpRequest.body;
     try {
       const user = await updateUser(id, { id, first_name, last_name, email, user_type });
-      res.status(200).json(user);
+      return { statusCode: 200, body: user }
     } catch (error) {
-      if (error instanceof UseCaseError) {
-        res.status(400).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: "Internal server error" });
-      }
+      console.log({ error: 'Error updating user', debug_details: error })
+      if (error instanceof UseCaseError)
+        return { statusCode: 400, body: { error: error.message } }
+      else if (error instanceof ValidationError)
+        return { statusCode: 400, body: { error: error.message } }
+      else
+        return { statusCode: 500, body: { error: "Internal server error" } }
+
     }
   }
