@@ -11,9 +11,8 @@ export class User {
     private _status: 1 | 0; // 1 - active, 0 - inactive
 
 
-    constructor(id: string, first_name: string, last_name: string, email: string, user_type: 1 | 2, helpers: IHelpers) {
-        const sanitizedData = { id, first_name, last_name, email, user_type }
-
+    constructor(data: { id: string, first_name: string, last_name: string, email: string, user_type: 1 | 2, status: 1 | 0, created_at: string, updated_at: string }, helpers: IHelpers) {
+        const sanitizedData = { ...data }
         sanitizedData.first_name = helpers.sanitize(sanitizedData.first_name);
         sanitizedData.last_name = helpers.sanitize(sanitizedData.last_name);
         sanitizedData.email = helpers.sanitize(sanitizedData.email);
@@ -26,11 +25,10 @@ export class User {
         this._last_name = sanitizedData.last_name;
         this._email = sanitizedData.email;
         this._user_type = sanitizedData.user_type;
-        this._status = 1;
 
-        const currentDate = new Date().toISOString();
-        this._created_at = currentDate;
-        this._updated_at = currentDate;
+        this._status = data.status;
+        this._created_at = data.created_at;
+        this._updated_at = data.updated_at;
     }
 
     // Getters
@@ -67,7 +65,7 @@ export class User {
     }
 
     // Business Logic
-    userToJson() {
+    toJson() {
         return Object.freeze({
             id: this.id,
             first_name: this.first_name,

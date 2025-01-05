@@ -4,6 +4,7 @@ import { IHelpers } from "../shared/interfaces.js";
 import { ValidationError } from "../shared/error/validation-error.js";
 import { UseCaseError } from "../shared/error/use-case-error.js";
 import { IUserRepository } from "../gateways/user-repository.js";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 
 type CreateUserDTO = {
 	first_name: string;
@@ -14,22 +15,21 @@ type CreateUserDTO = {
 
 export const createUser = ({ userRepository, helpers }: { userRepository: IUserRepository, helpers: IHelpers }) =>
 	async (userData: CreateUserDTO) => {
-		try {
-			const id = helpers.generateId();
-			const user = new User(
-				id,
-				userData.first_name,
-				userData.last_name,
-				userData.email,
-				userData.user_type,
-				helpers
-			);
-			await userRepository.createUser(user);
-			return user.userToJson();
-		} catch (error) {
-			if (error instanceof ValidationError) {
-				throw new UseCaseError('Invalid user data: ' + error.message);
-			}
-			throw new UseCaseError('Failed to create user');
-		}
+		const id = helpers.generateId();
+		const user = new User({
+			id,
+			first_name: userData.first_name,
+			last_name: userData.last_name,
+			email: userData.email,
+			user_type: userData.user_type,
+			status: 1,
+			created_at: new Date().toISOString(),
+			updated_at: new Date().toISOString(),
+		}, helpers);
+
+		const createdUser = await userRepository.createUser(user);
+
+		if (!createdUser) throw new UseCaseError('Failed to create user');
+		
+		return createdUser.toJson();
 	};

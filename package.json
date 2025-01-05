@@ -7,13 +7,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "set NODE_OPTIONS=--loader ts-node/esm&& ts-node src/app/server.ts",
-    "dev": "set NODE_OPTIONS=--loader ts-node/esm&& nodemon src/app/server.ts",
+    "dev": "nodemon",
     "build": "tsc",
-    "serve": "node dist/app/server.js"
+    "serve": "node dist/app/server.js",
+    "prisma:generate": "prisma generate --schema src/app/db/prisma/schema.prisma",
+    "prisma:migrate": "prisma migrate dev --schema src/app/db/prisma/schema.prisma",
+    "prisma:studio": "prisma studio --schema src/app/db/prisma/schema.prisma"
   },
   "author": "Oleksandr Riazantsev",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^5.22.0",
     "body-parser": "^1.20.3",
     "express": "^4.21.2",
     "sanitize-html": "^2.14.0",
