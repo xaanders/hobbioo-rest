@@ -11,12 +11,12 @@ const { router, prisma } = createRouter();
 app.use("/api", router);
 
 // Graceful shutdown
-process.on('SIGINT', async () => {
-    await prisma.$disconnect()
-    process.exit()
-})
+process.on("SIGINT", async () => {
+  await prisma.$disconnect();
+  process.exit();
+});
 
 const PORT = 3000;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

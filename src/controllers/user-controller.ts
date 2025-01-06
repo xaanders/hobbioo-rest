@@ -1,7 +1,7 @@
 // src/controllers/user-controller.ts
-import { User } from '../entities/user.js';
-import { HttpRequest } from '../express-callback/index.js';
-import { handleError } from './error-handler.js';
+import { User } from "../entities/user.js";
+import { HttpRequest } from "../express-callback/index.js";
+import { handleError } from "./error-handler.js";
 
 type CreateUserFn = (data: {
   first_name: string;
@@ -16,7 +16,7 @@ export const createUserController =
 
     try {
       const user = await createUser({ first_name, last_name, email, user_type });
-      if (!user) throw new Error('User not created');
+      if (!user) throw new Error("User not created");
 
       return { statusCode: 201, body: user };
     } catch (error) {

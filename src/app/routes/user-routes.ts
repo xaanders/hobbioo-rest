@@ -1,18 +1,18 @@
 // src/app/routes/userRoutes.ts
-import { Router } from 'express';
+import { Router } from "express";
 import {
   createUserController,
   getUserController,
   getUsersController,
   updateUserController,
-} from '../../controllers/user-controller.js';
-import { createUser } from '../../use-cases/create-user.js';
-import { helpers } from '../../app/helpers/helpers.js';
-import { getUser } from '../../use-cases/get-user.js';
-import { getUsers } from '../../use-cases/get-users.js';
-import { updateUser } from '../../use-cases/update-user.js';
-import { makeExpressCallback } from '../../express-callback/index.js';
-import { IUserRepository } from '../../gateways/user-repository.js';
+} from "../../controllers/user-controller.js";
+import { createUser } from "../../use-cases/create-user.js";
+import { helpers } from "../../app/helpers/helpers.js";
+import { getUser } from "../../use-cases/get-user.js";
+import { getUsers } from "../../use-cases/get-users.js";
+import { updateUser } from "../../use-cases/update-user.js";
+import { makeExpressCallback } from "../../express-callback/index.js";
+import { IUserRepository } from "../../gateways/user-repository.js";
 
 const makeUserRoutes = (userRepository: IUserRepository) => {
   const router = Router();
@@ -30,10 +30,10 @@ const makeUserRoutes = (userRepository: IUserRepository) => {
   const updateUserFlow = updateUser({ userRepository, helpers });
   const updateUserHandler = updateUserController(updateUserFlow);
 
-  router.get('/', makeExpressCallback(getUsersHandler));
-  router.get('/:id', makeExpressCallback(getUserHandler));
-  router.post('/', makeExpressCallback(createUserHandler));
-  router.patch('/:id', makeExpressCallback(updateUserHandler));
+  router.get("/", makeExpressCallback(getUsersHandler));
+  router.get("/:id", makeExpressCallback(getUserHandler));
+  router.post("/", makeExpressCallback(createUserHandler));
+  router.patch("/:id", makeExpressCallback(updateUserHandler));
 
   return router;
 };
