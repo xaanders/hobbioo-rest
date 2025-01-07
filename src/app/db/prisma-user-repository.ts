@@ -67,7 +67,7 @@ const createPrismaUserRepository = (prisma: PrismaClient): IUserRepository => ({
         updated_at: new Date(),
       },
     });
-
+    
     return new User(
       {
         id: updatedUser.id,
