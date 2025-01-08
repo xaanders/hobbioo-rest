@@ -1,6 +1,6 @@
 // src/controllers/user-controller.ts
 import { User } from "../entities/user.js";
-import { HttpRequest } from "../express-callback/index.js";
+import { HttpRequest, HttpResponse } from "../express-callback/index.js";
 import { handleError } from "./error-handler.js";
 
 type CreateUserFn = (data: {
@@ -11,8 +11,8 @@ type CreateUserFn = (data: {
 }) => Promise<Partial<User>>;
 
 export const createUserController =
-  (createUser: CreateUserFn) => async (httpRequest: HttpRequest) => {
-    const { first_name, last_name, email, user_type } = httpRequest.body;
+  (createUser: CreateUserFn) => async (httpRequest: HttpRequest): Promise<HttpResponse> => {
+    const { first_name, last_name, email, user_type } = httpRequest.body as { first_name: string, last_name: string, email: string, user_type: 1 | 2 };
 
     try {
       const user = await createUser({ first_name, last_name, email, user_type });
@@ -26,15 +26,16 @@ export const createUserController =
 
 type GetUserFn = (id: string) => Promise<Partial<User> | null>;
 
-export const getUserController = (getUser: GetUserFn) => async (httpRequest: HttpRequest) => {
-  const { id } = httpRequest.params;
-  try {
-    const user = await getUser(id);
-    return { statusCode: 200, body: user };
-  } catch (error) {
-    return handleError(error);
-  }
-};
+export const getUserController = 
+  (getUser: GetUserFn) => async (httpRequest: HttpRequest): Promise<HttpResponse> => {
+    const { id } = httpRequest.params as { id: string };
+    try {
+      const user = await getUser(id);
+      return { statusCode: 200, body: user };
+    } catch (error) {
+      return handleError(error);
+    }
+  };
 
 type UpdateUserFn = (
   id: string,
@@ -48,9 +49,9 @@ type UpdateUserFn = (
 ) => Promise<Partial<User>>;
 
 export const updateUserController =
-  (updateUser: UpdateUserFn) => async (httpRequest: HttpRequest) => {
-    const { id } = httpRequest.params;
-    const { first_name, last_name, email, user_type } = httpRequest.body;
+  (updateUser: UpdateUserFn) => async (httpRequest: HttpRequest): Promise<HttpResponse> => {
+    const { id } = httpRequest.params as { id: string };
+    const { first_name, last_name, email, user_type } = httpRequest.body as { first_name: string, last_name: string, email: string, user_type: 1 | 2 };
 
     try {
       const user = await updateUser(id, { id, first_name, last_name, email, user_type });
@@ -62,7 +63,7 @@ export const updateUserController =
 
 type GetUsersFn = () => Promise<Partial<User>[]>;
 
-export const getUsersController = (getUsers: GetUsersFn) => async () => {
+export const getUsersController = (getUsers: GetUsersFn) => async (): Promise<HttpResponse> => {
   try {
     const users = await getUsers();
     return { statusCode: 200, body: users };

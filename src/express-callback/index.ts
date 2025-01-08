@@ -1,4 +1,11 @@
 import { Request, Response } from "express";
+import logger from "../logger/index.js";
+
+export type HttpResponse = {
+  headers?: Record<string, string>;
+  statusCode: number;
+  body: any;
+};
 
 export type HttpRequest = {
   body: any;
@@ -10,9 +17,10 @@ export type HttpRequest = {
   headers: any;
 };
 
-export function makeExpressCallback(controller: any) {
+export function makeExpressCallback(controller: (httpRequest: HttpRequest) => Promise<HttpResponse>) {
   return (req: Request, res: Response) => {
     const httpRequest: HttpRequest = {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       body: req.body,
       query: req.query,
       params: req.params,
@@ -26,13 +34,16 @@ export function makeExpressCallback(controller: any) {
       },
     };
     controller(httpRequest)
-      .then((httpResponse: any) => {
+      .then((httpResponse: HttpResponse) => {
         if (httpResponse.headers) {
           res.set(httpResponse.headers);
         }
         res.type("json");
         res.status(httpResponse.statusCode).send(httpResponse.body);
       })
-      .catch((e: any) => res.status(500).send({ error: "An unkown error occurred." }));
+      .catch((e: any) => {
+        logger.error("Unknown error in makeExpressCallback:", e);
+        res.status(500).send({ error: "An unkown error occurred." });
+      });
   };
 }

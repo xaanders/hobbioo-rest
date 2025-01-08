@@ -5,8 +5,10 @@ import { EmailAlreadyExistsError } from "../shared/error/domain-errors.js";
 import { ResourceNotFoundError } from "../shared/error/domain-errors.js";
 import { ValidationError } from "../shared/error/validation-error.js";
 import { prismaErrorHandler } from "../app/db/prisma-error-handler.js";
+import { HttpResponse } from "../express-callback/index.js";
+import { AuthError } from "../shared/error/auth-error.js";
 
-export const handleError = (error: unknown) => {
+export const handleError = (error: unknown): HttpResponse => {
   logger.error("Error:", error);
 
   if (error instanceof ValidationError) {
@@ -22,7 +24,32 @@ export const handleError = (error: unknown) => {
   }
 
   if (error instanceof PrismaClientKnownRequestError) {
-    return prismaErrorHandler(error);
+    return prismaErrorHandler(error) as HttpResponse;
+  }
+
+  if (error instanceof AuthError) {
+    return { statusCode: 401, body: { error: error.message } };
+  }
+
+  return { statusCode: 500, body: { error: "Internal server error" } };
+};
+
+export const handleAuthError = (error: unknown): HttpResponse => {
+  logger.error("Auth Error:", error);
+  if (error instanceof Error && error.name === "NotAuthorizedException") {
+    return { statusCode: 401, body: { error: "Invalid username or password" } };
+  }
+
+  if (error instanceof Error && error.name === "UserNotFoundException") {
+    return { statusCode: 401, body: { error: "Invalid username or password" } };
+  }
+
+  if (error instanceof Error && error.name === "UserNotConfirmedException") {
+    return { statusCode: 403, body: { error: "User is not confirmed" } };
+  }
+
+  if (error instanceof AuthError) {
+    return { statusCode: 401, body: { error: error.message } };
   }
 
   return { statusCode: 500, body: { error: "Internal server error" } };

@@ -7,33 +7,43 @@ import {
   updateUserController,
 } from "../../controllers/user-controller.js";
 import { createUser } from "../../use-cases/create-user.js";
-import { helpers } from "../../app/helpers/helpers.js";
+import { helpers } from "../helpers/helpers.js";
 import { getUser } from "../../use-cases/get-user.js";
 import { getUsers } from "../../use-cases/get-users.js";
 import { updateUser } from "../../use-cases/update-user.js";
 import { makeExpressCallback } from "../../express-callback/index.js";
 import { IUserRepository } from "../../gateways/user-repository.js";
+import { makeAuthMiddleware } from "../auth/middleware.js";
+import { ISessionManager } from "../../gateways/session-manager.js";
 
-const makeUserRoutes = (userRepository: IUserRepository) => {
+const makeUserRoutes = (
+  userRepository: IUserRepository, 
+  sessionManager: ISessionManager
+) => {
   const router = Router();
 
-  // Compose the create user flow
+  // Initialize middleware
+  const authMiddleware = makeAuthMiddleware(sessionManager);
+
+  // Compose the use cases
   const createUserFlow = createUser({ userRepository, helpers });
-  const createUserHandler = createUserController(createUserFlow);
-
   const getUserFlow = getUser({ userRepository });
-  const getUserHandler = getUserController(getUserFlow);
-
   const getUsersFlow = getUsers({ userRepository });
-  const getUsersHandler = getUsersController(getUsersFlow);
-
   const updateUserFlow = updateUser({ userRepository, helpers });
+
+  // Initialize controllers
+  const createUserHandler = createUserController(createUserFlow);
+  const getUserHandler = getUserController(getUserFlow);
+  const getUsersHandler = getUsersController(getUsersFlow);
   const updateUserHandler = updateUserController(updateUserFlow);
 
-  router.get("/", makeExpressCallback(getUsersHandler));
-  router.get("/:id", makeExpressCallback(getUserHandler));
+  // Public routes
   router.post("/", makeExpressCallback(createUserHandler));
-  router.patch("/:id", makeExpressCallback(updateUserHandler));
+
+  // Protected routes - apply middleware
+  router.get("/", authMiddleware, makeExpressCallback(getUsersHandler));
+  router.get("/:id", authMiddleware, makeExpressCallback(getUserHandler));
+  router.patch("/:id", authMiddleware, makeExpressCallback(updateUserHandler));
 
   return router;
 };
