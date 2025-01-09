@@ -3,27 +3,6 @@ import { User } from "../entities/user.js";
 import { HttpRequest, HttpResponse } from "../express-callback/index.js";
 import { handleError } from "./error-handler.js";
 
-type CreateUserFn = (data: {
-  first_name: string;
-  last_name: string;
-  email: string;
-  user_type: 1 | 2;
-}) => Promise<Partial<User>>;
-
-export const createUserController =
-  (createUser: CreateUserFn) => async (httpRequest: HttpRequest): Promise<HttpResponse> => {
-    const { first_name, last_name, email, user_type } = httpRequest.body as { first_name: string, last_name: string, email: string, user_type: 1 | 2 };
-
-    try {
-      const user = await createUser({ first_name, last_name, email, user_type });
-      if (!user) throw new Error("User not created");
-
-      return { statusCode: 201, body: user };
-    } catch (error) {
-      return handleError(error);
-    }
-  };
-
 type GetUserFn = (id: string) => Promise<Partial<User> | null>;
 
 export const getUserController = 

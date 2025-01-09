@@ -9,7 +9,7 @@ import { HttpResponse } from "../express-callback/index.js";
 import { AuthError } from "../shared/error/auth-error.js";
 
 export const handleError = (error: unknown): HttpResponse => {
-  logger.error("Error:", error);
+  logger.error("Error:", error); // TODO: limit error logging
 
   if (error instanceof ValidationError) {
     return { statusCode: 400, body: { error: error.message } };
@@ -35,7 +35,7 @@ export const handleError = (error: unknown): HttpResponse => {
 };
 
 export const handleAuthError = (error: unknown): HttpResponse => {
-  logger.error("Auth Error:", error);
+  logger.error("Auth Error:", error); // TODO: limit error logging
   if (error instanceof Error && error.name === "NotAuthorizedException") {
     return { statusCode: 401, body: { error: "Invalid username or password" } };
   }
@@ -49,7 +49,7 @@ export const handleAuthError = (error: unknown): HttpResponse => {
   }
 
   if (error instanceof AuthError) {
-    return { statusCode: 401, body: { error: error.message } };
+    return { statusCode: 401, body: { error: error.message, debug: error.debug } };
   }
 
   return { statusCode: 500, body: { error: "Internal server error" } };

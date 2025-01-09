@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
 import { CognitoIdentityProvider } from '@aws-sdk/client-cognito-identity-provider';
@@ -8,6 +6,7 @@ import makeAuthRoutes from "./auth-routes.js";
 import { createPrismaUserRepository } from "../db/prisma-user-repository.js";
 import { InMemorySessionManager } from '../auth/session-manager.js';
 import { createCognitoAuth } from '../auth/cognito-service.js';
+import { helpers } from "../helpers/helpers.js";
 
 export const createRouter = () => {
   const router = Router();
@@ -32,8 +31,8 @@ export const createRouter = () => {
   const userRepository = createPrismaUserRepository(prisma);
 
   // Initialize routes
-  const userRoutes = makeUserRoutes(userRepository, sessionManager);
-  const authRoutes = makeAuthRoutes(cognitoAuth);
+  const userRoutes = makeUserRoutes(userRepository, sessionManager, helpers);
+  const authRoutes = makeAuthRoutes(cognitoAuth, userRepository, helpers);
 
   // Register routes
   router.use("/auth", authRoutes);
