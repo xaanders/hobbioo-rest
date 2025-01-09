@@ -1,11 +1,11 @@
 import { Router } from "express";
 import { PrismaClient } from "@prisma/client";
-import { CognitoIdentityProvider } from '@aws-sdk/client-cognito-identity-provider';
+import { CognitoIdentityProvider } from "@aws-sdk/client-cognito-identity-provider";
 import makeUserRoutes from "./user-routes.js";
 import makeAuthRoutes from "./auth-routes.js";
 import { createPrismaUserRepository } from "../db/prisma-user-repository.js";
-import { InMemorySessionManager } from '../auth/session-manager.js';
-import { createCognitoAuth } from '../auth/cognito-service.js';
+import { InMemorySessionManager } from "../auth/session-manager.js";
+import { createCognitoAuth } from "../auth/cognito-service.js";
 import { helpers } from "../helpers/helpers.js";
 
 export const createRouter = () => {
@@ -17,9 +17,9 @@ export const createRouter = () => {
   // Initialize auth dependencies
   const sessionManager = new InMemorySessionManager();
   const cognitoClient = new CognitoIdentityProvider({
-    region: process.env.AWS_REGION
+    region: process.env.AWS_REGION,
   });
-  
+
   const cognitoAuth = createCognitoAuth(
     cognitoClient,
     sessionManager,

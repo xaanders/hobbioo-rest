@@ -15,7 +15,7 @@ import { ISessionManager } from "../../gateways/session-manager.js";
 import { IHelpers } from "../../shared/interfaces.js";
 
 const makeUserRoutes = (
-  userRepository: IUserRepository, 
+  userRepository: IUserRepository,
   sessionManager: ISessionManager,
   helpers: IHelpers
 ) => {

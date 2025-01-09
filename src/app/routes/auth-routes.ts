@@ -10,9 +10,13 @@ import { createUser } from "../../use-cases/create-user.js";
 import { IUserRepository } from "../../gateways/user-repository.js";
 import { IHelpers } from "../../shared/interfaces.js";
 
-const makeAuthRoutes = (cognitoAuth: ICognitoAuth, userRepository: IUserRepository, helpers: IHelpers) => {
+const makeAuthRoutes = (
+  cognitoAuth: ICognitoAuth,
+  userRepository: IUserRepository,
+  helpers: IHelpers
+) => {
   const router = Router();
-    
+
   //initialize use cases
   const loginUserFlow = loginUser(cognitoAuth);
   const createUserFlow = createUser({ userRepository, helpers });
@@ -28,4 +32,4 @@ const makeAuthRoutes = (cognitoAuth: ICognitoAuth, userRepository: IUserReposito
   return router;
 };
 
-export default makeAuthRoutes; 
+export default makeAuthRoutes;

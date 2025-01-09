@@ -11,7 +11,8 @@ app.use("/api", router);
 
 // Graceful shutdown
 process.on("SIGINT", () => {
-  prisma.$disconnect()
+  prisma
+    .$disconnect()
     .then(() => process.exit())
     .catch(() => process.exit(1));
 });

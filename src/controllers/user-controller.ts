@@ -5,8 +5,9 @@ import { handleError } from "./error-handler.js";
 
 type GetUserFn = (id: string) => Promise<Partial<User> | null>;
 
-export const getUserController = 
-  (getUser: GetUserFn) => async (httpRequest: HttpRequest): Promise<HttpResponse> => {
+export const getUserController =
+  (getUser: GetUserFn) =>
+  async (httpRequest: HttpRequest): Promise<HttpResponse> => {
     const { id } = httpRequest.params as { id: string };
     try {
       const user = await getUser(id);
@@ -28,9 +29,15 @@ type UpdateUserFn = (
 ) => Promise<Partial<User>>;
 
 export const updateUserController =
-  (updateUser: UpdateUserFn) => async (httpRequest: HttpRequest): Promise<HttpResponse> => {
+  (updateUser: UpdateUserFn) =>
+  async (httpRequest: HttpRequest): Promise<HttpResponse> => {
     const { id } = httpRequest.params as { id: string };
-    const { first_name, last_name, email, user_type } = httpRequest.body as { first_name: string, last_name: string, email: string, user_type: 1 | 2 };
+    const { first_name, last_name, email, user_type } = httpRequest.body as {
+      first_name: string;
+      last_name: string;
+      email: string;
+      user_type: 1 | 2;
+    };
 
     try {
       const user = await updateUser(id, { id, first_name, last_name, email, user_type });

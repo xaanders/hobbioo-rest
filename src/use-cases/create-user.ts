@@ -13,25 +13,25 @@ type CreateUserDTO = {
 
 export const createUser =
   ({ userRepository, helpers }: { userRepository: IUserRepository; helpers: IHelpers }) =>
-    async (userData: CreateUserDTO) => {
-      const id = helpers.generateId();
-      const user = new User(
-        {
-          id,
-          first_name: userData.first_name,
-          last_name: userData.last_name,
-          email: userData.email,
-          user_type: userData.user_type,
-          status: 1,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        },
-        helpers
-      );
-      
-      const createdUser = await userRepository.createUser(user);
+  async (userData: CreateUserDTO) => {
+    const id = helpers.generateId();
+    const user = new User(
+      {
+        id,
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        email: userData.email,
+        user_type: userData.user_type,
+        status: 1,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      },
+      helpers
+    );
 
-      if (!createdUser) throw new UseCaseError("Failed to create user");
+    const createdUser = await userRepository.createUser(user);
 
-      return createdUser.toJson();
-    };
+    if (!createdUser) throw new UseCaseError("Failed to create user");
+
+    return createdUser.toJson();
+  };

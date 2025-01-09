@@ -23,14 +23,16 @@ export class User {
     } | null,
     helpers: IHelpers
   ) {
-
     if (!data) return;
 
-    const sanitizedData = this.sanitizeUserInputs({
-      first_name: data.first_name,
-      last_name: data.last_name,
-      email: data.email,
-    }, helpers);
+    const sanitizedData = this.sanitizeUserInputs(
+      {
+        first_name: data.first_name,
+        last_name: data.last_name,
+        email: data.email,
+      },
+      helpers
+    );
     // Validate data
     this.validateUserFields({
       first_name: sanitizedData.first_name,
@@ -123,11 +125,14 @@ export class User {
     }
   }
 
-  sanitizeUserInputs(data: {
-    first_name: string;
-    last_name: string;
-    email: string;
-  }, helpers: IHelpers): {
+  sanitizeUserInputs(
+    data: {
+      first_name: string;
+      last_name: string;
+      email: string;
+    },
+    helpers: IHelpers
+  ): {
     first_name: string;
     last_name: string;
     email: string;
@@ -139,11 +144,14 @@ export class User {
     };
   }
 
-  sanitizeUserFieldsForUpdate(data: {
-    first_name?: string;
-    last_name?: string;
-    email?: string;
-  }, helpers: IHelpers): {
+  sanitizeUserFieldsForUpdate(
+    data: {
+      first_name?: string;
+      last_name?: string;
+      email?: string;
+    },
+    helpers: IHelpers
+  ): {
     first_name?: string;
     last_name?: string;
     email?: string;
@@ -170,22 +178,25 @@ export class User {
     if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
       throw new ValidationError("Invalid email format");
     }
-    if (data.user_type && (data.user_type !== 1 && data.user_type !== 2)) {
+    if (data.user_type && data.user_type !== 1 && data.user_type !== 2) {
       throw new ValidationError("Invalid user type");
     }
   }
 
-  beforeUpdate(data: Partial<{ first_name: string; last_name: string; email: string; user_type: 1 | 2 }>, helpers: IHelpers) {
+  beforeUpdate(
+    data: Partial<{ first_name: string; last_name: string; email: string; user_type: 1 | 2 }>,
+    helpers: IHelpers
+  ) {
     this.validateUserFieldsForUpdate(data);
     const sanitizedData = this.sanitizeUserFieldsForUpdate(data, helpers);
-    Object.keys(sanitizedData).forEach(key => {
+    Object.keys(sanitizedData).forEach((key) => {
       if (!sanitizedData[key as keyof typeof sanitizedData]) {
         delete sanitizedData[key as keyof typeof sanitizedData];
       }
     });
-    
-    if(Object.keys(sanitizedData).length === 0) throw new ValidationError("No fields to update");
-    
+
+    if (Object.keys(sanitizedData).length === 0) throw new ValidationError("No fields to update");
+
     return sanitizedData;
   }
   // Updating the entity with sanitization and validation

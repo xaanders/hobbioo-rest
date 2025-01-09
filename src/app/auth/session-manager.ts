@@ -9,20 +9,20 @@ export class InMemorySessionManager implements ISessionManager {
   async createSession(userData: UserSession, expiresIn: number): Promise<string> {
     const sessionId = crypto.randomUUID();
 
-    const expiresAt = (userData.exp ? userData.exp * 1000 : Date.now() + expiresIn);
+    const expiresAt = userData.exp ? userData.exp * 1000 : Date.now() + expiresIn;
 
     this.sessions.set(sessionId, {
       user: userData,
-      expiresAt: expiresAt
+      expiresAt: expiresAt,
     });
     return sessionId;
   }
 
   async getSession(sessionId: string): Promise<Session | null> {
     const session = this.sessions.get(sessionId);
-    console.log('sessions', this.sessions);
+    console.log("sessions", this.sessions);
     if (!session) return null;
-    
+
     if (session.expiresAt < Date.now()) {
       this.sessions.delete(sessionId);
       return null;
@@ -33,4 +33,4 @@ export class InMemorySessionManager implements ISessionManager {
   async removeSession(sessionId: string): Promise<void> {
     this.sessions.delete(sessionId);
   }
-} 
+}

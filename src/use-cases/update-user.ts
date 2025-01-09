@@ -11,10 +11,9 @@ export const updateUser = ({
   helpers: IHelpers;
 }) => {
   return async (id: string, data: Partial<User>): Promise<Partial<User>> => {
-    
     const user = new User(null, helpers);
-    const sanitizedAndValidatedData = user.beforeUpdate(data, helpers)
-    
+    const sanitizedAndValidatedData = user.beforeUpdate(data, helpers);
+
     const updatedUser = await userRepository.updateUser(id, sanitizedAndValidatedData as User);
 
     if (!updatedUser) throw new UseCaseError("Could not update user");

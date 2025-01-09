@@ -17,7 +17,9 @@ export type HttpRequest = {
   headers: any;
 };
 
-export function makeExpressCallback(controller: (httpRequest: HttpRequest) => Promise<HttpResponse>) {
+export function makeExpressCallback(
+  controller: (httpRequest: HttpRequest) => Promise<HttpResponse>
+) {
   return (req: Request, res: Response) => {
     const httpRequest: HttpRequest = {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
