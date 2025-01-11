@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { IHelpers } from "../shared/interfaces.js";
+import { handleError } from "../controllers/error-handler.js";
 
 export type HttpResponse = {
   headers?: Record<string, string>;
@@ -43,8 +44,9 @@ export function makeExpressCallback(helpers: IHelpers) {
           res.status(httpResponse.statusCode).send(httpResponse.body);
         })
         .catch((e: any) => {
-          helpers.logger(`Unknown error in makeExpressCallback: ${e}`, "error");
-          res.status(500).send({ error: "An unkown error occurred." });
+          helpers.logger(e as string, "error");
+          const error = handleError(e);
+          res.status(error.statusCode).send(error.body);
         });
     };
   };

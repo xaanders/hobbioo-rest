@@ -8,8 +8,6 @@ import { HttpResponse } from "../express-callback/index.js";
 import { AuthError } from "../shared/error/auth-error.js";
 
 export const handleError = (error: unknown): HttpResponse => {
-  // helpers.logger("Error:", error); // TODO: limit error logging
-
   if (error instanceof ValidationError) {
     return { statusCode: 400, body: { error: error.message } };
   }
@@ -26,15 +24,15 @@ export const handleError = (error: unknown): HttpResponse => {
     return prismaErrorHandler(error) as HttpResponse;
   }
 
-  if (error instanceof AuthError) {
-    return { statusCode: 401, body: { error: error.message } };
-  }
-
   return { statusCode: 500, body: { error: "Internal server error" } };
 };
 
-export const handleAuthError = (error: unknown): HttpResponse => {
-  // helpers.logger("Auth Error:", error); // TODO: limit error logging
+export const handleAuthError = (error: unknown): HttpResponse | undefined => {
+
+  if(error instanceof AuthError) {
+    return { statusCode: 401, body: { error: error.message } };
+  }
+
   if (error instanceof Error && error.name === "NotAuthorizedException") {
     return { statusCode: 401, body: { error: "Invalid username or password" } };
   }
@@ -47,9 +45,24 @@ export const handleAuthError = (error: unknown): HttpResponse => {
     return { statusCode: 403, body: { error: "User is not confirmed" } };
   }
 
-  if (error instanceof AuthError) {
-    return { statusCode: 401, body: { error: error.message, debug: error.debug } };
+  if (error instanceof Error && error.name === "UsernameExistsException") {
+    return { statusCode: 409, body: { error: "Username already exists" } };
   }
 
-  return { statusCode: 500, body: { error: "Internal server error" } };
+  if (error instanceof Error && error.name === "InvalidPasswordException") {
+    return { statusCode: 400, body: { error: "Password is invalid" } };
+  }
+
+  if (error instanceof Error && error.name === "InvalidParameterException") {
+    return { statusCode: 400, body: { error: "Invalid parameter" } };
+  }
+
+  if (error instanceof Error && error.name === "LimitExceededException") {
+    return { statusCode: 400, body: { error: "Limit exceeded" } };
+  }
+  
+  if (error instanceof AuthError) {
+    return { statusCode: 401, body: { error: error.message } };
+  }
+
 };

@@ -15,4 +15,7 @@ export const helpers: IHelpers = {
   logger: (message: string, type: "info" | "error" | "warn") => {
     logger[type](message);
   },
+  isProductionData: (developmentData: any, productionData: any): any => {
+    return process.env.NODE_ENV === "production" ? productionData : developmentData;
+  },
 };

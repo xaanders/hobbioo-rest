@@ -121,20 +121,17 @@ export function createCognitoAuth(
     name: string;
   }): Promise<SignUpCommandOutput> {
     const params: SignUpCommandInput = {
-      ClientId: clientId, // Replace with your Cognito App Client ID
-      Username: user.username, // This can be the email
+      ClientId: clientId,
+      Username: user.username,
       Password: user.password,
-      // SecretHash: getSecretHash(user.username),
       UserAttributes: [
         { Name: "email", Value: user.username },
         { Name: "name", Value: user.name },
-        // { Name: "custom:user_id", Value: user.id },
+        { Name: "custom:user_id", Value: user.id }
       ],
     };
-    console.log("Registering user:", params);
-    const response: SignUpCommandOutput = await cognito.signUp(params);
 
-    return response;
+    return await cognito.signUp(params);
   }
 
   return {

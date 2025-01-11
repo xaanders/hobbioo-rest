@@ -21,11 +21,11 @@ const makeAuthRoutes = (
 
   //initialize use cases
   const loginUserFlow = loginUser(cognitoAuth);
-  const createUserFlow = createUser({ userRepository, helpers });
+  const createUserFlow = createUser({ userRepository, helpers, cognitoAuth });
 
   //initialize controllers
-  const loginUserHandler = loginController(loginUserFlow);
-  const registerUserHandler = registerUserController(createUserFlow, cognitoAuth);
+  const loginUserHandler = loginController(loginUserFlow, helpers);
+  const registerUserHandler = registerUserController(createUserFlow);
 
   //register routes
   router.post("/login", expressCallback(loginUserHandler));
