@@ -2,7 +2,6 @@
 import { User } from "../entities/user.js";
 import { HttpRequest, HttpResponse } from "../express-callback/index.js";
 import { handleAuthError, handleError } from "./error-handler.js";
-import logger from "../logger/index.js";
 import { ICognitoAuth } from "../app/auth/cognito-service.js";
 import { SignUpCommandOutput } from "@aws-sdk/client-cognito-identity-provider";
 import { AuthError } from "../shared/error/auth-error.js";
@@ -67,7 +66,6 @@ export const registerUserController =
           JSON.stringify({ user, cognitoUser })
         );
 
-      logger.info("Registered new user", { user, cognitoUser });
 
       return { statusCode: 201, body: user };
     } catch (error) {

@@ -23,7 +23,7 @@ const makeUserRoutes = (
 
   // Initialize middleware
   const authMiddleware = makeAuthMiddleware(sessionManager);
-
+  const expressCallback = makeExpressCallback(helpers);
   // Compose the use cases
   // const createUserFlow = createUser({ userRepository, helpers });
   const getUserFlow = getUser({ userRepository });
@@ -40,9 +40,9 @@ const makeUserRoutes = (
   // router.post("/", makeExpressCallback(createUserHandler));
 
   // Protected routes - apply middleware
-  router.get("/", authMiddleware, makeExpressCallback(getUsersHandler));
-  router.get("/:id", authMiddleware, makeExpressCallback(getUserHandler));
-  router.patch("/:id", authMiddleware, makeExpressCallback(updateUserHandler));
+  router.get("/", authMiddleware, expressCallback(getUsersHandler));
+  router.get("/:id", authMiddleware, expressCallback(getUserHandler));
+  router.patch("/:id", authMiddleware, expressCallback(updateUserHandler));
 
   return router;
 };

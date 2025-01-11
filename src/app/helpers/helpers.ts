@@ -1,4 +1,5 @@
 import sanitize from "sanitize-html";
+import logger from "./logger.js";
 import { IHelpers } from "../../shared/interfaces.js";
 
 export const helpers: IHelpers = {
@@ -10,5 +11,8 @@ export const helpers: IHelpers = {
       allowedTags: [],
       allowedAttributes: {},
     });
+  },
+  logger: (message: string, type: "info" | "error" | "warn") => {
+    logger[type](message);
   },
 };

@@ -1,5 +1,4 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import logger from "../logger/index.js";
 import { EmailAlreadyExistsError } from "../shared/error/domain-errors.js";
 
 import { ResourceNotFoundError } from "../shared/error/domain-errors.js";
@@ -9,7 +8,7 @@ import { HttpResponse } from "../express-callback/index.js";
 import { AuthError } from "../shared/error/auth-error.js";
 
 export const handleError = (error: unknown): HttpResponse => {
-  logger.error("Error:", error); // TODO: limit error logging
+  // helpers.logger("Error:", error); // TODO: limit error logging
 
   if (error instanceof ValidationError) {
     return { statusCode: 400, body: { error: error.message } };
@@ -35,7 +34,7 @@ export const handleError = (error: unknown): HttpResponse => {
 };
 
 export const handleAuthError = (error: unknown): HttpResponse => {
-  logger.error("Auth Error:", error); // TODO: limit error logging
+  // helpers.logger("Auth Error:", error); // TODO: limit error logging
   if (error instanceof Error && error.name === "NotAuthorizedException") {
     return { statusCode: 401, body: { error: "Invalid username or password" } };
   }

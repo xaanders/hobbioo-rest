@@ -17,6 +17,8 @@ const makeAuthRoutes = (
 ) => {
   const router = Router();
 
+  const expressCallback = makeExpressCallback(helpers);
+
   //initialize use cases
   const loginUserFlow = loginUser(cognitoAuth);
   const createUserFlow = createUser({ userRepository, helpers });
@@ -26,8 +28,8 @@ const makeAuthRoutes = (
   const registerUserHandler = registerUserController(createUserFlow, cognitoAuth);
 
   //register routes
-  router.post("/login", makeExpressCallback(loginUserHandler));
-  router.post("/register", makeExpressCallback(registerUserHandler));
+  router.post("/login", expressCallback(loginUserHandler));
+  router.post("/register", expressCallback(registerUserHandler));
 
   return router;
 };
