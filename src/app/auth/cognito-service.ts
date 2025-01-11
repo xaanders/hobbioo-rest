@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
+  AdminConfirmSignUpCommandInput,
   CognitoIdentityProvider,
   InitiateAuthCommandInput,
   SignUpCommandInput,
@@ -34,6 +35,7 @@ export interface ICognitoAuth {
     name: string;
   }): Promise<SignUpCommandOutput>;
   verifyToken(token: string): Promise<any>;
+  confirmEmail(username: string): Promise<any>;
 }
 
 export function createCognitoAuth(
@@ -134,9 +136,19 @@ export function createCognitoAuth(
     return await cognito.signUp(params);
   }
 
+  async function confirmEmail(username: string): Promise<any> {
+    const params: AdminConfirmSignUpCommandInput = {
+      Username: username,
+      UserPoolId: userPoolId,
+    };
+
+    return await cognito.adminConfirmSignUp(params);
+  }
+
   return {
     authenticateUser,
     registerUser,
     verifyToken,
+    confirmEmail,
   };
 }
