@@ -111,14 +111,23 @@ export class User {
     if (data.first_name.trim() === "") {
       throw new ValidationError("First name cannot be empty");
     }
+    if (data.first_name.length > propertiesLength.first_name) {
+      throw new ValidationError(`First name cannot be longer than ${propertiesLength.first_name} characters`);
+    }
     if (!data.last_name) {
       throw new ValidationError("Last name is required");
     }
     if (data.last_name.trim() === "") {
       throw new ValidationError("Last name cannot be empty");
     }
+    if (data.last_name.length > propertiesLength.last_name) {
+      throw new ValidationError(`Last name cannot be longer than ${propertiesLength.last_name} characters`); 
+    }
     if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
       throw new ValidationError("Invalid email format");
+    }
+    if (data.email.length > propertiesLength.email) {
+      throw new ValidationError(`Email cannot be longer than ${propertiesLength.email} characters`);
     }
     if (data.user_type !== 1 && data.user_type !== 2) {
       throw new ValidationError("Invalid user type");
@@ -220,3 +229,9 @@ export class User {
   //   if (sanitizedData.user_type) this._user_type = sanitizedData.user_type;
   // }
 }
+
+const propertiesLength = {
+  first_name: 100,
+  last_name: 100,
+  email: 100,
+};
