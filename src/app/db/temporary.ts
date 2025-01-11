@@ -23,7 +23,7 @@ export class InMemoryUserRepository implements IUserRepository {
 
     users.set(id, data);
 
-    return data as User;
+    return data;
   }
 
   async deleteUser(id: string): Promise<void> {

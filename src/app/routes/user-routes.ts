@@ -12,7 +12,7 @@ import { makeExpressCallback } from "../../express-callback/index.js";
 import { IUserRepository } from "../../gateways/user-repository.js";
 import { makeAuthMiddleware } from "../auth/middleware.js";
 import { ISessionManager } from "../../gateways/session-manager.js";
-import { IHelpers } from "../../shared/interfaces.js";
+import { IHelpers } from "../helpers/IHelpers.js";
 
 const makeUserRoutes = (
   userRepository: IUserRepository,

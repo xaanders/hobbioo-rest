@@ -1,4 +1,4 @@
-import { IHelpers } from "../shared/interfaces.js";
+import { IHelpers } from "../app/helpers/IHelpers.js";
 import { User } from "../entities/user.js";
 import { IUserRepository } from "../gateways/user-repository.js";
 import { UseCaseError } from "../shared/error/use-case-error.js";

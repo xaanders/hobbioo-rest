@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { IHelpers } from "../shared/interfaces.js";
+import { IHelpers } from "../app/helpers/IHelpers.js";
 import { handleError } from "../controllers/error-handler.js";
 
 export type HttpResponse = {

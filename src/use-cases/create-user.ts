@@ -1,6 +1,6 @@
 // src/useCases/createUser.ts
 import { User } from "../entities/user.js";
-import { IHelpers } from "../shared/interfaces.js";
+import { IHelpers } from "../app/helpers/IHelpers.js";
 import { UseCaseError } from "../shared/error/use-case-error.js";
 import { IUserRepository } from "../gateways/user-repository.js";
 import { ICognitoAuth } from "../app/auth/cognito-service.js";

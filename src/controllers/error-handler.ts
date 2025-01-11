@@ -29,10 +29,10 @@ export const handleError = (error: unknown): HttpResponse => {
 
 export const handleAuthError = (error: unknown): HttpResponse | undefined => {
 
-  if(error instanceof AuthError) {
+  if (error instanceof AuthError) {
     return { statusCode: 401, body: { error: error.message } };
   }
-
+  // login
   if (error instanceof Error && error.name === "NotAuthorizedException") {
     return { statusCode: 401, body: { error: "Invalid username or password" } };
   }
@@ -45,6 +45,7 @@ export const handleAuthError = (error: unknown): HttpResponse | undefined => {
     return { statusCode: 403, body: { error: "User is not confirmed" } };
   }
 
+  // register
   if (error instanceof Error && error.name === "UsernameExistsException") {
     return { statusCode: 409, body: { error: "Username already exists" } };
   }
@@ -60,7 +61,17 @@ export const handleAuthError = (error: unknown): HttpResponse | undefined => {
   if (error instanceof Error && error.name === "LimitExceededException") {
     return { statusCode: 400, body: { error: "Limit exceeded" } };
   }
-  
+  // email confirmation
+  if(error instanceof Error && error.name === "CodeMismatchException") {
+    return { statusCode: 400, body: { error: "Code mismatch" } };
+  }
+
+  if(error instanceof Error && error.name === "ExpiredCodeException") {
+    return { statusCode: 400, body: { error: error.message } };
+  }
+
+
+
   if (error instanceof AuthError) {
     return { statusCode: 401, body: { error: error.message } };
   }

@@ -3,7 +3,7 @@ import { User } from "../entities/user.js";
 import { HttpRequest, HttpResponse } from "../express-callback/index.js";
 import { handleAuthError, handleError } from "./error-handler.js";
 import { AuthError } from "../shared/error/auth-error.js";
-import { IHelpers } from "../shared/interfaces.js";
+import { IHelpers } from "../app/helpers/IHelpers.js";
 
 type LoginUserFn = (username: string, password: string) => Promise<string>;
 
@@ -24,7 +24,6 @@ export const loginController =
           body: helpers.isProductionData({ sessionId: sessionId }, { message: "Login successful" }),
         };
       } catch (error) {
-        console.log("error:", error)
         return handleAuthError(error) || handleError(error);
       }
     };
@@ -53,8 +52,29 @@ export const registerUserController =
         if (!user || !user.id) throw new AuthError("User not created");
 
         return { statusCode: 201, body: user };
-      } catch (error: any) {
-        console.log("error:", error)
+      } catch (error) {
         return handleAuthError(error) || handleError(error);
       };
     };
+
+export const logoutController = () => {}
+
+type ConfirmUserEmailFn = (username: string, code: string) => Promise<string>;
+
+export const confirmUserEmailController = (confirmUserEmail: ConfirmUserEmailFn, helpers: IHelpers) => {
+  return async (httpRequest: HttpRequest): Promise<HttpResponse> => {
+    const { username, code } = httpRequest.query as { username: string; code: string };
+
+    try {
+
+      const message = await confirmUserEmail(username, code);
+      return { statusCode: 200, body: message };
+
+    } catch (error) {
+      if(error instanceof AuthError)
+        helpers.logger(`Email confirmation: ${error.debug}`, "error")
+
+      return handleAuthError(error) || handleError(error);
+    }
+  }
+}

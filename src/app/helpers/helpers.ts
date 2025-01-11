@@ -1,6 +1,6 @@
 import sanitize from "sanitize-html";
 import logger from "./logger.js";
-import { IHelpers } from "../../shared/interfaces.js";
+import { IHelpers } from "./IHelpers.js";
 
 export const helpers: IHelpers = {
   generateId: () => {

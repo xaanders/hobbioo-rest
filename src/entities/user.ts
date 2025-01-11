@@ -1,4 +1,4 @@
-import { IHelpers } from "../shared/interfaces.js";
+import { IHelpers } from "../app/helpers/IHelpers.js";
 import { ValidationError } from "../shared/error/validation-error.js";
 export class User {
   private _id: string = "";
