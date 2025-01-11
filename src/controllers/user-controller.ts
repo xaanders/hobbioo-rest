@@ -1,6 +1,6 @@
 // src/controllers/user-controller.ts
 import { User } from "../entities/user.js";
-import { HttpRequest, HttpResponse } from "../express-callback/index.js";
+import { HttpRequest, HttpResponse } from "../express/callback.js";
 // import { handleError } from "./error-handler.js";
 
 type GetUserFn = (id: string) => Promise<Partial<User> | null>;

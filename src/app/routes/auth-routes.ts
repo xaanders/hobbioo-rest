@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { ICognitoAuth } from "../auth/cognito-service.js";
-import { makeExpressCallback } from "../../express-callback/index.js";
+import { makeExpressCallback } from "../../express/callback.js";
 
 import { loginController, registerUserController, confirmUserEmailController } from "../../controllers/auth-controller.js";
 
@@ -27,7 +27,7 @@ const makeAuthRoutes = (
 
   //initialize controllers
   const loginUserHandler = loginController(loginUserFlow, helpers);
-  const registerUserHandler = registerUserController(createUserFlow);
+  const registerUserHandler = registerUserController(createUserFlow, helpers);
   const confirmUserEmailHandler = confirmUserEmailController(confirmUserEmailFlow, helpers);
 
   //register routes

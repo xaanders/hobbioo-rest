@@ -4,7 +4,7 @@ import { EmailAlreadyExistsError } from "../shared/error/domain-errors.js";
 import { ResourceNotFoundError } from "../shared/error/domain-errors.js";
 import { ValidationError } from "../shared/error/validation-error.js";
 import { prismaErrorHandler } from "../app/db/prisma-error-handler.js";
-import { HttpResponse } from "../express-callback/index.js";
+import { HttpResponse } from "./callback.js";
 import { AuthError } from "../shared/error/auth-error.js";
 
 export const handleError = (error: unknown): HttpResponse => {

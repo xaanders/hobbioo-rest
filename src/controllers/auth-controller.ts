@@ -1,7 +1,7 @@
 // src/controllers/user-controller.ts
 import { User } from "../entities/user.js";
-import { HttpRequest, HttpResponse } from "../express-callback/index.js";
-import { handleAuthError, handleError } from "./error-handler.js";
+import { HttpRequest, HttpResponse } from "../express/callback.js";
+import { handleAuthError, handleError } from "../express/error-handler.js";
 import { AuthError } from "../shared/error/auth-error.js";
 import { IHelpers } from "../app/helpers/IHelpers.js";
 
@@ -37,7 +37,7 @@ type CreateUserFn = (data: {
 }) => Promise<Partial<User>>;
 
 export const registerUserController =
-  (createUser: CreateUserFn) =>
+  (createUser: CreateUserFn, helpers: IHelpers) =>
     async (httpRequest: HttpRequest): Promise<HttpResponse> => {
       const { first_name, last_name, email, user_type, password } = httpRequest.body as {
         first_name: string;
@@ -48,11 +48,11 @@ export const registerUserController =
       };
       try {
         const user = await createUser({ first_name, last_name, email, user_type, password });
-
-        if (!user || !user.id) throw new AuthError("User not created");
-
         return { statusCode: 201, body: user };
       } catch (error) {
+        if(error instanceof AuthError)
+          helpers.logger(`Register user: ${error.debug}`, "error")
+
         return handleAuthError(error) || handleError(error);
       };
     };

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { IHelpers } from "../app/helpers/IHelpers.js";
-import { handleError } from "../controllers/error-handler.js";
+import { handleError } from "./error-handler.js";
 
 export type HttpResponse = {
   headers?: Record<string, string>;
