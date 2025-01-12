@@ -46,6 +46,11 @@ npm install
 ```bash
 DATABASE_URL="postgresql://username:password@localhost:5432/database_name"
 DIRECT_URL="postgresql://username:password@localhost:5432/database_name"
+COGNITO_USER_POOL_ID="us-east-1_1234567890"
+COGNITO_CLIENT_ID="1234567890"
+AWS_REGION="us-east-1"
+COGNITO_CLIENT_SECRET="1234567890"
+NODE_ENV="development"
 ```
 
 4. Generate Prisma client:
@@ -77,15 +82,12 @@ The server will start on port 3000 by default.
 - `npm run prisma:generate` - Generate Prisma client
 - `npm run prisma:migrate` - Run database migrations
 - `npm run prisma:studio` - Open Prisma Studio
+- `npm run lint` - Run linting
+- `npm run format` - Format code
 
 ## API Endpoints
 
-### Users
-
-- `POST /api/users` - Create a new user
-- `GET /api/users/:id` - Get user by ID
-- `PATCH /api/users/:id` - Update user
-- `DELETE /api/users/:id` - Delete user
+See [API.md](API.md)
 
 ## Project Structure
 
@@ -96,6 +98,7 @@ The API implements comprehensive error handling including:
 - Domain errors
 - Database errors
 - Use case errors
+- Authentication errors
 
 ## Logging
 
@@ -111,9 +114,6 @@ Winston logger is configured to log:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## License
-
-This project is licensed under the ISC License.
 
 ## Author
 
