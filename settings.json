@@ -1,0 +1,7 @@
+{
+    "rateLimit": {
+        "maxRequests": 5,
+        "timeWindowSec": 60,
+        "ipWhitelist": [] // TODO: add ip whitelist check
+    }
+}

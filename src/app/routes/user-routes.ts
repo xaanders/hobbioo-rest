@@ -1,5 +1,5 @@
 // src/app/routes/userRoutes.ts
-import { Router } from "express";
+import { NextFunction, Router, Request, Response } from "express";
 import {
   getUserController,
   getUsersController,
@@ -10,19 +10,17 @@ import { getUsers } from "../../use-cases/get-users.js";
 import { updateUser } from "../../use-cases/update-user.js";
 import { makeExpressCallback } from "../../express/callback.js";
 import { IUserRepository } from "../../gateways/user-repository.js";
-import { makeAuthMiddleware } from "../auth/middleware.js";
-import { ISessionManager } from "../../gateways/session-manager.js";
 import { IHelpers } from "../helpers/IHelpers.js";
 
 const makeUserRoutes = (
   userRepository: IUserRepository,
-  sessionManager: ISessionManager,
-  helpers: IHelpers
+  helpers: IHelpers,
+  rateLimitMiddleware: (req: Request, res: Response, next: NextFunction) => void,
+  authMiddleware: (req: Request, res: Response, next: NextFunction) => Promise<void>
 ) => {
   const router = Router();
 
   // Initialize middleware
-  const authMiddleware = makeAuthMiddleware(sessionManager);
   const expressCallback = makeExpressCallback(helpers);
   // Compose the use cases
   // const createUserFlow = createUser({ userRepository, helpers });
@@ -40,9 +38,9 @@ const makeUserRoutes = (
   // router.post("/", makeExpressCallback(createUserHandler));
 
   // Protected routes - apply middleware
-  router.get("/", authMiddleware, expressCallback(getUsersHandler));
-  router.get("/:id", authMiddleware, expressCallback(getUserHandler));
-  router.patch("/:id", authMiddleware, expressCallback(updateUserHandler));
+  router.get("/", authMiddleware, rateLimitMiddleware, expressCallback(getUsersHandler));
+  router.get("/:id", authMiddleware, rateLimitMiddleware, expressCallback(getUserHandler));
+  router.patch("/:id", authMiddleware, rateLimitMiddleware, expressCallback(updateUserHandler));
 
   return router;
 };

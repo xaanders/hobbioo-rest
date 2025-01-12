@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import { ISessionManager } from "../../gateways/session-manager.js";
 import { InvalidOrExpiredSessionError } from "../../shared/error/auth-error.js";
 
-export const makeAuthMiddleware = (sessionManager: ISessionManager) => {
+const makeAuthMiddleware = (sessionManager: ISessionManager) => {
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const sessionId = req.headers["authorization"] as string;
 
@@ -25,3 +25,5 @@ export const makeAuthMiddleware = (sessionManager: ISessionManager) => {
     }
   };
 };
+
+export default makeAuthMiddleware;
