@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { createRateLimiter } from './InMemoryRateLimiter.js';
 import { IHelpers } from '../helpers/IHelpers.js';
 import { UserSession } from '../../shared/types.js';
-// This is where the RateLimiter service is instantiated
 
 const makeRateLimitMiddleware = (helpers: IHelpers) => {
     const { rateLimit } = helpers.getSettings();
@@ -17,8 +16,12 @@ const makeRateLimitMiddleware = (helpers: IHelpers) => {
             next(); // Proceed to the next middleware or route handler
         } catch (error) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            const user = req?.body?.user as UserSession;
-            helpers.logger(`Rate limit exceeded: ${JSON.stringify({ error, user, ip: key })}`, "error");
+            const { email, 'custom:user_id': userId, name } = req?.body?.user as UserSession;
+            helpers.logger(`Rate limit exceeded: ${JSON.stringify({
+                error,
+                user: { email, user_id: userId, name },
+                ip: key
+            })}`, "error");
             res.status(429).json({ error: 'Too many requests, please try again later.' });
         }
     };

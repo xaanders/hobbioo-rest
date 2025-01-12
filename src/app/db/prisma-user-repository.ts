@@ -5,35 +5,29 @@ import { helpers } from "../helpers/helpers.js";
 
 const createPrismaUserRepository = (prisma: PrismaClient): IUserRepository => ({
   async createUser(user: User): Promise<User> {
-    // const createdUser = await prisma.user.create({
-    //   data: {
-    //     id: user.id,
-    //     first_name: user.first_name,
-    //     last_name: user.last_name,
-    //     email: user.email,
-    //     user_type: user.user_type,
-    //     status: user.status,
-    //     created_at: new Date(user.created_at).toISOString(),
-    //     updated_at: new Date(user.updated_at).toISOString(),
-    //   },
-    // });
-
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(user);
-      }, 1000);
-    });
-
-    return new User(
-      {
+    const createdUser = await prisma.user.create({
+      data: {
         id: user.id,
         first_name: user.first_name,
         last_name: user.last_name,
         email: user.email,
         user_type: user.user_type,
         status: user.status,
-        created_at: user.created_at,
-        updated_at: user.updated_at,
+        created_at: new Date(user.created_at).toISOString(),
+        updated_at: new Date(user.updated_at).toISOString(),
+      },
+    });
+
+    return new User(
+      {
+        id: createdUser.id,
+        first_name: createdUser.first_name,
+        last_name: createdUser.last_name,
+        email: createdUser.email,
+        user_type: createdUser.user_type as 1 | 2,
+        status: createdUser.status as 0 | 1,
+        created_at: createdUser.created_at.toISOString(),
+        updated_at: createdUser.updated_at.toISOString(),
       },
       helpers
     );
@@ -46,18 +40,18 @@ const createPrismaUserRepository = (prisma: PrismaClient): IUserRepository => ({
 
     return user
       ? new User(
-          {
-            id: user.id,
-            first_name: user.first_name,
-            last_name: user.last_name,
-            email: user.email,
-            user_type: user.user_type as 1 | 2,
-            status: user.status as 0 | 1,
-            created_at: user.created_at.toISOString(),
-            updated_at: user.updated_at.toISOString(),
-          },
-          helpers
-        )
+        {
+          id: user.id,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          email: user.email,
+          user_type: user.user_type as 1 | 2,
+          status: user.status as 0 | 1,
+          created_at: user.created_at.toISOString(),
+          updated_at: user.updated_at.toISOString(),
+        },
+        helpers
+      )
       : null;
   },
 

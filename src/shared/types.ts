@@ -7,7 +7,9 @@ export type UserSession = {
   sub: string;
   email_verified: boolean;
   iss: string;
+  "custom:user_id": string;
   "cognito:username": string;
+  email: string;
   origin_jti: string;
   aud: string;
   event_id: string;
