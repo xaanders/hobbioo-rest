@@ -1,5 +1,4 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { EmailAlreadyExistsError } from "../shared/error/domain-errors.js";
 
 import { ResourceNotFoundError } from "../shared/error/domain-errors.js";
 import { ValidationError } from "../shared/error/validation-error.js";
@@ -11,11 +10,7 @@ export const handleError = (error: unknown): HttpResponse => {
   if (error instanceof ValidationError) {
     return { statusCode: 400, body: { error: error.message } };
   }
-
-  if (error instanceof EmailAlreadyExistsError) {
-    return { statusCode: 409, body: { error: error.message } };
-  }
-
+  
   if (error instanceof ResourceNotFoundError) {
     return { statusCode: 404, body: { error: error.message } };
   }
