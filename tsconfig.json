@@ -13,7 +13,8 @@
   "include": [
     "src/**/*",
     "src/**/*.ts",
-    "index.ts"
+    "index.ts",
+    "jest.config.js"
   ],
   "exclude": ["node_modules"]
 } 
