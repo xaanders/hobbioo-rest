@@ -37,6 +37,7 @@ export interface ICognitoAuth {
   }): Promise<SignUpCommandOutput>;
   verifyToken(token: string): Promise<any>;
   confirmEmail(username: string, code: string): Promise<ConfirmSignUpCommandOutput>;
+  logoutUser(sessionId: string): Promise<void>;
 }
 
 export function createCognitoAuth(
@@ -148,10 +149,15 @@ export function createCognitoAuth(
     return await cognito.confirmSignUp(params as ConfirmSignUpCommandInput);
   }
 
+  async function logoutUser(sessionId: string): Promise<void> {
+    await sessionManager.removeSession(sessionId);
+  }
+
   return {
     authenticateUser,
     registerUser,
     verifyToken,
     confirmEmail,
+    logoutUser,
   };
 }

@@ -32,7 +32,7 @@ export const createRouter = () => {
 
   // Initialize routes
   const userRoutes = makeUserRoutes(userRepository, sessionManager, helpers);
-  const authRoutes = makeAuthRoutes(cognitoAuth, userRepository, helpers);
+  const authRoutes = makeAuthRoutes(cognitoAuth, userRepository, helpers, sessionManager);
 
   // Register routes
   router.use("/auth", authRoutes);

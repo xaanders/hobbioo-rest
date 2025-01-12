@@ -50,14 +50,24 @@ export const registerUserController =
         const user = await createUser({ first_name, last_name, email, user_type, password });
         return { statusCode: 201, body: user };
       } catch (error) {
-        if(error instanceof AuthError)
+        if (error instanceof AuthError)
           helpers.logger(`Register user: ${error.debug}`, "error")
 
         return handleAuthError(error) || handleError(error);
       };
     };
 
-export const logoutController = () => {}
+type LogoutUserFn = (sessionId: string) => Promise<void>;
+
+export const logoutController = (logoutUser: LogoutUserFn) => {
+  return async (httpRequest: HttpRequest): Promise<HttpResponse> => {
+
+    const sessionId = httpRequest.headers.Authorization as string;
+
+    await logoutUser(sessionId);
+    return { statusCode: 200, body: { message: "Logout successful" }, headers: { "Set-Cookie": `sessionId=; HttpOnly; Secure; SameSite=Strict; Max-Age=0; Path=/` } };
+  }
+}
 
 type ConfirmUserEmailFn = (username: string, code: string) => Promise<string>;
 
@@ -71,7 +81,7 @@ export const confirmUserEmailController = (confirmUserEmail: ConfirmUserEmailFn,
       return { statusCode: 200, body: message };
 
     } catch (error) {
-      if(error instanceof AuthError)
+      if (error instanceof AuthError)
         helpers.logger(`Email confirmation: ${error.debug}`, "error")
 
       return handleAuthError(error) || handleError(error);

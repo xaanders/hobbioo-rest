@@ -15,7 +15,12 @@ export type HttpRequest = {
   ip: string;
   method: string;
   path: string;
-  headers: any;
+  headers: {
+    Authorization?: string;
+    "Content-Type"?: string;
+    Referer?: string;
+    "User-Agent"?: string;
+  };
 };
 
 export function makeExpressCallback(helpers: IHelpers) {
@@ -33,6 +38,7 @@ export function makeExpressCallback(helpers: IHelpers) {
           "Content-Type": req.get("Content-Type"),
           Referer: req.get("referer"),
           "User-Agent": req.get("User-Agent"),
+          "Authorization": req.get("Authorization"),
         },
       };
       controller(httpRequest)
