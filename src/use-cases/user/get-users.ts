@@ -1,5 +1,5 @@
-import { User } from "../entities/user.js";
-import { IUserRepository } from "../gateways/user-repository.js";
+import { User } from "../../entities/user.js";
+import { IUserRepository } from "../../gateways/user-repository.js";
 
 export const getUsers =
   ({ userRepository }: { userRepository: IUserRepository }) =>

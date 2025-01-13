@@ -4,13 +4,13 @@ import { makeExpressCallback } from "../../express/callback.js";
 
 import { loginController, registerUserController, confirmUserEmailController, logoutController } from "../../controllers/auth-controller.js";
 
-import { loginUser } from "../../use-cases/login-user.js";
-import { createUser } from "../../use-cases/create-user.js";
+import { loginUser } from "../../use-cases/auth/login-user.js";
+import { createUser } from "../../use-cases/auth/create-user.js";
+import { confirmUserEmail } from "../../use-cases/auth/confirm-user.js";
+import { logoutUser } from "../../use-cases/auth/logout-user.js";
 
 import { IUserRepository } from "../../gateways/user-repository.js";
 import { IHelpers } from "../helpers/IHelpers.js";
-import { confirmUserEmail } from "../../use-cases/confirm-user.js";
-import { logoutUser } from "../../use-cases/logout-user.js";
 
 const makeAuthRoutes = (
   cognitoAuth: ICognitoAuth,

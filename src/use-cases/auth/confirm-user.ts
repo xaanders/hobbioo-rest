@@ -1,6 +1,6 @@
-import { ICognitoAuth } from "../app/auth/cognito-service.js";
-import { AuthError } from "../shared/error/auth-error.js";
-import { ValidationError } from "../shared/error/validation-error.js";
+import { ICognitoAuth } from "../../app/auth/cognito-service.js";
+import { AuthError } from "../../shared/error/auth-error.js";
+import { ValidationError } from "../../shared/error/validation-error.js";
 
 export const confirmUserEmail =
   (cognitoAuth: ICognitoAuth) =>

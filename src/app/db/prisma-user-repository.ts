@@ -85,7 +85,7 @@ const createPrismaUserRepository = (prisma: PrismaClient): IUserRepository => ({
 
   async deleteUser(id: string): Promise<void> {
     await prisma.user.delete({
-      where: { id },
+      where: { user_id: id },
     });
   },
 

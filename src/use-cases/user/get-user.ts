@@ -1,7 +1,7 @@
 // src/useCases/getUser.ts
-import { UseCaseError } from "../shared/error/use-case-error.js";
-import { User } from "../entities/user.js";
-import { IUserRepository } from "../gateways/user-repository.js";
+import { UseCaseError } from "../../shared/error/use-case-error.js";
+import { User } from "../../entities/user.js";
+import { IUserRepository } from "../../gateways/user-repository.js";
 
 export const getUser =
   ({ userRepository }: { userRepository: IUserRepository }) =>

@@ -1,10 +1,10 @@
 // src/useCases/createUser.ts
-import { User } from "../entities/user.js";
-import { IHelpers } from "../app/helpers/IHelpers.js";
-import { UseCaseError } from "../shared/error/use-case-error.js";
-import { IUserRepository } from "../gateways/user-repository.js";
-import { ICognitoAuth } from "../app/auth/cognito-service.js";
-import { AuthError } from "../shared/error/auth-error.js";
+import { User } from "../../entities/user.js";
+import { IHelpers } from "../../app/helpers/IHelpers.js";
+import { UseCaseError } from "../../shared/error/use-case-error.js";
+import { IUserRepository } from "../../gateways/user-repository.js";
+import { ICognitoAuth } from "../../app/auth/cognito-service.js";
+import { AuthError } from "../../shared/error/auth-error.js";
 
 type CreateUserDTO = {
   first_name: string;
@@ -20,7 +20,7 @@ export const createUser =
     const id = helpers.generateId();
     const user = new User(
       {
-        id,
+        user_id: id,
         first_name: userData.first_name,
         last_name: userData.last_name,
         email: userData.email,
@@ -35,7 +35,7 @@ export const createUser =
     const cognitoUser = await cognitoAuth.registerUser({
       username: user.email,
       password: userData.password,
-      id: user.id,
+      id: user.user_id,
       name: `${user.first_name} ${user.last_name}`,
     });
 

@@ -5,9 +5,9 @@ import {
   getUsersController,
   updateUserController,
 } from "../../controllers/user-controller.js";
-import { getUser } from "../../use-cases/get-user.js";
-import { getUsers } from "../../use-cases/get-users.js";
-import { updateUser } from "../../use-cases/update-user.js";
+import { getUser } from "../../use-cases/user/get-user.js";
+import { getUsers } from "../../use-cases/user/get-users.js";
+import { updateUser } from "../../use-cases/user/update-user.js";
 import { makeExpressCallback } from "../../express/callback.js";
 import { IUserRepository } from "../../gateways/user-repository.js";
 import { IHelpers } from "../helpers/IHelpers.js";
