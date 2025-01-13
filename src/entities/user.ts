@@ -1,7 +1,7 @@
 import { IHelpers } from "../app/helpers/IHelpers.js";
 import { ValidationError } from "../shared/error/validation-error.js";
 export class User {
-  private _id: string = "";
+  private _user_id: string = "";
   private _first_name: string = "";
   private _last_name: string = "";
   private _email: string = "";
@@ -12,7 +12,7 @@ export class User {
 
   constructor(
     data: {
-      id: string;
+      user_id: string;
       first_name: string;
       last_name: string;
       email: string;
@@ -41,7 +41,7 @@ export class User {
       user_type: data.user_type,
     });
 
-    this._id = data.id;
+    this._user_id = data.user_id;
     this._first_name = sanitizedData.first_name;
     this._last_name = sanitizedData.last_name;
     this._email = sanitizedData.email;
@@ -53,8 +53,8 @@ export class User {
   }
 
   // Getters
-  get id() {
-    return this._id;
+  get user_id() {
+    return this._user_id;
   }
 
   get first_name() {
@@ -88,7 +88,7 @@ export class User {
   // Business Logic
   toJson() {
     return Object.freeze({
-      id: this.id,
+      user_id: this.user_id,
       first_name: this.first_name,
       last_name: this.last_name,
       email: this.email,
@@ -99,7 +99,7 @@ export class User {
   }
 
   validateUserFields(data: {
-    id?: string;
+    user_id?: string;
     first_name?: string;
     last_name?: string;
     email?: string;

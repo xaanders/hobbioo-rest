@@ -7,7 +7,7 @@ const createPrismaUserRepository = (prisma: PrismaClient): IUserRepository => ({
   async createUser(user: User): Promise<User> {
     const createdUser = await prisma.user.create({
       data: {
-        id: user.id,
+        user_id: user.user_id,
         first_name: user.first_name,
         last_name: user.last_name,
         email: user.email,
@@ -20,7 +20,7 @@ const createPrismaUserRepository = (prisma: PrismaClient): IUserRepository => ({
 
     return new User(
       {
-        id: createdUser.id,
+        user_id: createdUser.user_id,
         first_name: createdUser.first_name,
         last_name: createdUser.last_name,
         email: createdUser.email,
@@ -35,13 +35,13 @@ const createPrismaUserRepository = (prisma: PrismaClient): IUserRepository => ({
 
   async getUser(id: string): Promise<User | null> {
     const user = await prisma.user.findUnique({
-      where: { id },
+      where: { user_id: id },
     });
 
     return user
       ? new User(
         {
-          id: user.id,
+          user_id: user.user_id,
           first_name: user.first_name,
           last_name: user.last_name,
           email: user.email,
@@ -57,7 +57,7 @@ const createPrismaUserRepository = (prisma: PrismaClient): IUserRepository => ({
 
   async updateUser(id: string, data: User): Promise<User> {
     const updatedUser = await prisma.user.update({
-      where: { id },
+      where: { user_id: id },
       data: {
         first_name: data.first_name,
         last_name: data.last_name,
@@ -70,7 +70,7 @@ const createPrismaUserRepository = (prisma: PrismaClient): IUserRepository => ({
 
     return new User(
       {
-        id: updatedUser.id,
+        user_id: updatedUser.user_id,
         first_name: updatedUser.first_name,
         last_name: updatedUser.last_name,
         email: updatedUser.email,
@@ -95,7 +95,7 @@ const createPrismaUserRepository = (prisma: PrismaClient): IUserRepository => ({
       (user) =>
         new User(
           {
-            id: user.id,
+            user_id: user.user_id,
             first_name: user.first_name,
             last_name: user.last_name,
             email: user.email,
