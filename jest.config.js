@@ -10,5 +10,13 @@ export default {
   extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1'
-  }
+  },
+  testMatch: [
+    "**/__tests__/**/*.test.ts"
+  ],
+  // testPathIgnorePatterns: [
+  //   "/node_modules/",
+  //   "/dist/",
+  //   "/__tests__/mocks/"
+  // ]
 };
