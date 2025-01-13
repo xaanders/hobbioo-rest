@@ -10,7 +10,7 @@ export const handleError = (error: unknown): HttpResponse => {
   if (error instanceof ValidationError) {
     return { statusCode: 400, body: { error: error.message } };
   }
-  
+
   if (error instanceof ResourceNotFoundError) {
     return { statusCode: 404, body: { error: error.message } };
   }
@@ -23,7 +23,6 @@ export const handleError = (error: unknown): HttpResponse => {
 };
 
 export const handleAuthError = (error: unknown): HttpResponse | undefined => {
-
   if (error instanceof AuthError) {
     return { statusCode: 401, body: { error: error.message } };
   }
@@ -57,18 +56,15 @@ export const handleAuthError = (error: unknown): HttpResponse | undefined => {
     return { statusCode: 400, body: { error: "Limit exceeded" } };
   }
   // email confirmation
-  if(error instanceof Error && error.name === "CodeMismatchException") {
+  if (error instanceof Error && error.name === "CodeMismatchException") {
     return { statusCode: 400, body: { error: "Code mismatch" } };
   }
 
-  if(error instanceof Error && error.name === "ExpiredCodeException") {
+  if (error instanceof Error && error.name === "ExpiredCodeException") {
     return { statusCode: 400, body: { error: error.message } };
   }
-
-
 
   if (error instanceof AuthError) {
     return { statusCode: 401, body: { error: error.message } };
   }
-
 };

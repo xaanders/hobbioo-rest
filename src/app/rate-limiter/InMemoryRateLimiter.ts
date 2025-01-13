@@ -1,9 +1,7 @@
-
 type RateLimit = {
   count: number;
   timestamp: number;
 };
-
 
 export function createRateLimiter(limit: number, window: number) {
   const rateLimits = new Map<string, RateLimit>();

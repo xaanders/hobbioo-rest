@@ -13,7 +13,7 @@ describe("User Use Cases", () => {
     last_name: "Doe",
     email: "john@example.com",
     toJson: jest.fn().mockReturnValue({
-        user_id: "123",
+      user_id: "123",
       name: "John Doe",
       email: "john@example.com",
     }),
@@ -126,9 +126,7 @@ describe("User Use Cases", () => {
       });
 
       await expect(updateUserUseCase("123", updateData)).rejects.toThrow(UseCaseError);
-      await expect(updateUserUseCase("123", updateData)).rejects.toThrow(
-        "Could not update user"
-      );
+      await expect(updateUserUseCase("123", updateData)).rejects.toThrow("Could not update user");
     });
   });
 });

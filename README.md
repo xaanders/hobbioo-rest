@@ -118,3 +118,11 @@ Winston logger is configured to log:
 ## Author
 
 Oleksandr Riazantsev
+
+## TODO
+
+1. Integrate tests
+2. Create Post entity
+3. Create controller for Post Creation, Update, Get
+4. Create Use Case for Post Creation, Update, Get
+5. Create Prisma Repository for Post - select, insert, update

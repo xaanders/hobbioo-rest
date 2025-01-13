@@ -53,40 +53,48 @@ export class User {
   }
 
   // Getters
-  get user_id() {
+  get user_id(): string {
     return this._user_id;
   }
 
-  get first_name() {
+  get first_name(): string {
     return this._first_name;
   }
 
-  get last_name() {
+  get last_name(): string {
     return this._last_name;
   }
 
-  get email() {
+  get email(): string {
     return this._email;
   }
 
-  get user_type() {
+  get user_type(): 1 | 2 {
     return this._user_type;
   }
 
-  get created_at() {
+  get created_at(): string {
     return this._created_at;
   }
 
-  get updated_at() {
+  get updated_at(): string {
     return this._updated_at;
   }
 
-  get status() {
+  get status(): 1 | 0 {
     return this._status;
   }
 
   // Business Logic
-  toJson() {
+  toJson(): {
+    user_id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    user_type: 1 | 2;
+    created_at: string;
+    updated_at: string;
+  } {
     return Object.freeze({
       user_id: this.user_id,
       first_name: this.first_name,
@@ -112,7 +120,9 @@ export class User {
       throw new ValidationError("First name cannot be empty");
     }
     if (data.first_name.length > propertiesLength.first_name) {
-      throw new ValidationError(`First name cannot be longer than ${propertiesLength.first_name} characters`);
+      throw new ValidationError(
+        `First name cannot be longer than ${propertiesLength.first_name} characters`
+      );
     }
     if (!data.last_name) {
       throw new ValidationError("Last name is required");
@@ -121,7 +131,9 @@ export class User {
       throw new ValidationError("Last name cannot be empty");
     }
     if (data.last_name.length > propertiesLength.last_name) {
-      throw new ValidationError(`Last name cannot be longer than ${propertiesLength.last_name} characters`); 
+      throw new ValidationError(
+        `Last name cannot be longer than ${propertiesLength.last_name} characters`
+      );
     }
     if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
       throw new ValidationError("Invalid email format");
@@ -195,7 +207,11 @@ export class User {
   beforeUpdate(
     data: Partial<{ first_name: string; last_name: string; email: string; user_type: 1 | 2 }>,
     helpers: IHelpers
-  ) {
+  ): {
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+  } {
     this.validateUserFieldsForUpdate(data);
     const sanitizedData = this.sanitizeUserFieldsForUpdate(data, helpers);
     Object.keys(sanitizedData).forEach((key) => {

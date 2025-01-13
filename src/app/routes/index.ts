@@ -37,7 +37,13 @@ export const createRouter = () => {
 
   // Initialize routes
   const userRoutes = makeUserRoutes(userRepository, helpers, rateLimitMiddleware, authMiddleware);
-  const authRoutes = makeAuthRoutes(cognitoAuth, userRepository, helpers, rateLimitMiddleware, authMiddleware);
+  const authRoutes = makeAuthRoutes(
+    cognitoAuth,
+    userRepository,
+    helpers,
+    rateLimitMiddleware,
+    authMiddleware
+  );
 
   // Register routes
   router.use("/auth", authRoutes);

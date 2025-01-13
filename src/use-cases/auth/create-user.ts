@@ -15,7 +15,15 @@ type CreateUserDTO = {
 };
 
 export const createUser =
-  ({ userRepository, helpers, cognitoAuth }: { userRepository: IUserRepository; helpers: IHelpers; cognitoAuth: ICognitoAuth }) =>
+  ({
+    userRepository,
+    helpers,
+    cognitoAuth,
+  }: {
+    userRepository: IUserRepository;
+    helpers: IHelpers;
+    cognitoAuth: ICognitoAuth;
+  }) =>
   async (userData: CreateUserDTO) => {
     const id = helpers.generateId();
     const user = new User(

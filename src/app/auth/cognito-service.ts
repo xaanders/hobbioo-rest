@@ -131,7 +131,7 @@ export function createCognitoAuth(
       UserAttributes: [
         { Name: "email", Value: user.username },
         { Name: "name", Value: user.name },
-        { Name: "custom:user_id", Value: user.id }
+        { Name: "custom:user_id", Value: user.id },
       ],
     };
 

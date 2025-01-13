@@ -3,7 +3,7 @@ import logger from "./logger.js";
 import { IHelpers, Settings } from "./IHelpers.js";
 import fs from "fs";
 
-const settings = JSON.parse(fs.readFileSync('settings.json', 'utf8')) as Settings;
+const settings = JSON.parse(fs.readFileSync("settings.json", "utf8")) as Settings;
 
 export const helpers: IHelpers = {
   generateId: () => {
@@ -23,6 +23,5 @@ export const helpers: IHelpers = {
   },
   getSettings: (): Settings => {
     return settings;
-  }
+  },
 };
-

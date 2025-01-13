@@ -2,7 +2,12 @@ import { NextFunction, Router, Request, Response } from "express";
 import { ICognitoAuth } from "../auth/cognito-service.js";
 import { makeExpressCallback } from "../../express/callback.js";
 
-import { loginController, registerUserController, confirmUserEmailController, logoutController } from "../../controllers/auth-controller.js";
+import {
+  loginController,
+  registerUserController,
+  confirmUserEmailController,
+  logoutController,
+} from "../../controllers/auth-controller.js";
 
 import { loginUser } from "../../use-cases/auth/login-user.js";
 import { createUser } from "../../use-cases/auth/create-user.js";

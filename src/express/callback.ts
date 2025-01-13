@@ -38,7 +38,7 @@ export function makeExpressCallback(helpers: IHelpers) {
           "Content-Type": req.get("Content-Type"),
           Referer: req.get("referer"),
           "User-Agent": req.get("User-Agent"),
-          "Authorization": req.get("Authorization"),
+          Authorization: req.get("Authorization"),
         },
       };
       controller(httpRequest)
@@ -56,4 +56,4 @@ export function makeExpressCallback(helpers: IHelpers) {
         });
     };
   };
-};
+}

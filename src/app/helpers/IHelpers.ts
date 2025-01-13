@@ -6,11 +6,10 @@ export interface IHelpers {
   getSettings: () => Settings;
 }
 
-
 export type Settings = {
   rateLimit: {
     maxRequests: number;
     timeWindowSec: number;
     ipWhitelist: string[];
-  }
-}
+  };
+};

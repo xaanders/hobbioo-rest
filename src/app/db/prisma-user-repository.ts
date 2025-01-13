@@ -40,18 +40,18 @@ const createPrismaUserRepository = (prisma: PrismaClient): IUserRepository => ({
 
     return user
       ? new User(
-        {
-          user_id: user.user_id,
-          first_name: user.first_name,
-          last_name: user.last_name,
-          email: user.email,
-          user_type: user.user_type as 1 | 2,
-          status: user.status as 0 | 1,
-          created_at: user.created_at.toISOString(),
-          updated_at: user.updated_at.toISOString(),
-        },
-        helpers
-      )
+          {
+            user_id: user.user_id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            user_type: user.user_type as 1 | 2,
+            status: user.status as 0 | 1,
+            created_at: user.created_at.toISOString(),
+            updated_at: user.updated_at.toISOString(),
+          },
+          helpers
+        )
       : null;
   },
 

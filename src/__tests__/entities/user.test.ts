@@ -11,7 +11,6 @@ const mockHelpers = {
 } as IHelpers;
 
 describe("User Entity", () => {
-
   const validUserData = {
     user_id: "123",
     first_name: "John",
@@ -26,13 +25,15 @@ describe("User Entity", () => {
   describe("Constructor", () => {
     it("should create a valid user", () => {
       const user = new User(validUserData, mockHelpers);
-      expect(user.toJson()).toEqual(expect.objectContaining({
-        user_id: validUserData.user_id,
-        first_name: validUserData.first_name,
-        last_name: validUserData.last_name,
-        email: validUserData.email,
-        user_type: validUserData.user_type,
-      }));
+      expect(user.toJson()).toEqual(
+        expect.objectContaining({
+          user_id: validUserData.user_id,
+          first_name: validUserData.first_name,
+          last_name: validUserData.last_name,
+          email: validUserData.email,
+          user_type: validUserData.user_type,
+        })
+      );
     });
 
     it("should handle null input", () => {
@@ -77,17 +78,19 @@ describe("User Entity", () => {
         new User({ ...validUserData, user_type: 3 as 1 | 2 }, mockHelpers);
       }).toThrow(ValidationError);
     });
-
   });
 
   describe("Sanitization", () => {
     it("should trim whitespace from inputs", () => {
-      const user = new User({
-        ...validUserData,
-        first_name: "  John  ",
-        last_name: "  Doe  ",
-        email: "  john@example.com<br>  "
-      }, mockHelpers);
+      const user = new User(
+        {
+          ...validUserData,
+          first_name: "  John  ",
+          last_name: "  Doe  ",
+          email: "  john@example.com<br>  ",
+        },
+        mockHelpers
+      );
 
       expect(user.first_name).toBe("John");
       expect(user.last_name).toBe("Doe");
@@ -105,7 +108,7 @@ describe("User Entity", () => {
     it("should validate partial updates", () => {
       const updateData = {
         first_name: "Jane",
-        email: "jane@example.com"
+        email: "jane@example.com",
       };
 
       const result = user.beforeUpdate(updateData, mockHelpers);
@@ -119,10 +122,13 @@ describe("User Entity", () => {
     });
 
     it("should remove undefined fields", () => {
-      const result = user.beforeUpdate({
-        first_name: "Jane",
-        last_name: undefined,
-      }, mockHelpers);
+      const result = user.beforeUpdate(
+        {
+          first_name: "Jane",
+          last_name: undefined,
+        },
+        mockHelpers
+      );
 
       expect(result).toHaveProperty("first_name");
       expect(result).not.toHaveProperty("last_name");

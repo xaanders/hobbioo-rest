@@ -19,7 +19,6 @@ export class InMemoryUserRepository implements IUserRepository {
   }
 
   updateUser(id: string, data: Partial<User>): Promise<User> {
-
     const existingUser = users.get(id);
     if (!existingUser) {
       throw new Error("User not found");
