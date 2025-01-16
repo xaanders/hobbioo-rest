@@ -14,6 +14,9 @@ describe("Post Entity", () => {
         description: "This is a test post",
         user_id: "123",
         image_id: "123",
+        status: 1,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
     };
     describe("Constructor", () => {
         it("should create a post", () => {
@@ -90,6 +93,9 @@ describe("Post Entity", () => {
             description: "This is a test post<br/>",
             user_id: "123",
             image_id: "123",
+            status: 1,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
         };
         it("should sanitize the post", () => {
             const post = new Post(mockPost);
@@ -98,6 +104,9 @@ describe("Post Entity", () => {
             expect(post.description).toBe("This is a test post");
             expect(post.user_id).toBe("123");
             expect(post.image_id).toBe("123");
+            expect(post.status).toBe(1);
+            expect(post.created_at).toBe(mockPost.created_at);
+            expect(post.updated_at).toBe(mockPost.updated_at);
         });
         
         it("should sanitize the post with empty values", () => {

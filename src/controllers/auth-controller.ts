@@ -10,10 +10,10 @@ type LoginUserFn = (username: string, password: string) => Promise<string>;
 export const loginController =
   (loginUser: LoginUserFn, helpers: IHelpers) =>
   async (httpRequest: HttpRequest): Promise<HttpResponse> => {
-    const { username, password } = httpRequest.body as { username: string; password: string };
+    const { username, password } = httpRequest.body;
 
     try {
-      const sessionId = await loginUser(username, password);
+      const sessionId = await loginUser(username as string, password as string);
 
       return {
         statusCode: 200,
@@ -39,15 +39,15 @@ type CreateUserFn = (data: {
 export const registerUserController =
   (createUser: CreateUserFn, helpers: IHelpers) =>
   async (httpRequest: HttpRequest): Promise<HttpResponse> => {
-    const { first_name, last_name, email, user_type, password } = httpRequest.body as {
-      first_name: string;
-      last_name: string;
-      email: string;
-      user_type: 1 | 2;
-      password: string;
-    };
+    const { first_name, last_name, email, user_type, password } = httpRequest.body;
     try {
-      const user = await createUser({ first_name, last_name, email, user_type, password });
+      const user = await createUser({ 
+        first_name: first_name as string,
+        last_name: last_name as string,
+        email: email as string,
+        user_type: user_type as 1 | 2,
+        password: password as string
+       });
       return { statusCode: 201, body: user };
     } catch (error) {
       if (error instanceof AuthError) helpers.logger(`Register user: ${error.debug}`, "error");

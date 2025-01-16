@@ -9,7 +9,12 @@ export type HttpResponse = {
 };
 
 export type HttpRequest = {
-  body: any;
+  body: {
+    user: {
+      [key: string]: any;
+    };
+    [key: string]: any;
+  };
   query: any;
   params: any;
   ip: string;
