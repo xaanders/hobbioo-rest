@@ -9,10 +9,8 @@ export const createPostController =
     (createPost: CreatePostFn) =>
         async (httpRequest: HttpRequest): Promise<HttpResponse> => {
             const { user } = httpRequest.body.user as Session;
-
             const { title, description } = httpRequest.body;
-
-            const user_type = user.user.user_type;
+            const user_type = user.user_type;
 
             if(user_type !== 2)
                 return { statusCode: 403, body: { error: "User is not a provider" } };
@@ -23,7 +21,7 @@ export const createPostController =
             const post = await createPost({
                 title: title as string,
                 description: description as string,
-                user_id: user.user.user_id,
+                user_id: user.user_id,
                 image_id: image_id as string
             });
 

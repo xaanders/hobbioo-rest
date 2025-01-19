@@ -13,7 +13,7 @@ const makeAuthMiddleware = (sessionManager: ISessionManager) => {
       if (!session) throw new InvalidOrExpiredSessionError("Invalid session", "/login");
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      req.body["user"] = session.user;
+      req.body["user"] = session;
       next();
     } catch (error) {
       if (error instanceof InvalidOrExpiredSessionError) {

@@ -1,15 +1,13 @@
 export type Session = {
+    session: UserSession;
     user: {
-        session: UserSession;
-        user: {
-            user_id: string;
-            first_name: string;
-            last_name: string;
-            email: string;
-            user_type: number;
-            createdAt: string;
-            updatedAt: string;
-        };
+        user_id: string;
+        first_name: string;
+        last_name: string;
+        email: string;
+        user_type: number;
+        createdAt: string;
+        updatedAt: string;
     };
     expiresAt: number;
 };

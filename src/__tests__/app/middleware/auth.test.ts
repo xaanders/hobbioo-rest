@@ -29,81 +29,82 @@ describe("Auth Middleware", () => {
     mockReq.headers = {
       authorization: "Bearer valid-token",
     };
-    sessionManager.getSession.mockResolvedValue({
+    const expiresAt = Date.now() + 3600000;
+    const mockSession = {
+      session: {},
       user: {
         id: "123",
         email: "test@example.com",
       },
-    });
-    const authMiddleware = makeAuthMiddleware(sessionManager);
-
-    // Act
-    await authMiddleware(mockReq as Request, mockRes as Response, nextFunction);
-
-    // Assert
-    expect(sessionManager.getSession).toHaveBeenCalledWith("Bearer valid-token");
-    expect(nextFunction).toHaveBeenCalled();
-    expect(mockRes.status).not.toHaveBeenCalled();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    expect(mockReq.body["user"]).toEqual({
-      id: "123",
-      email: "test@example.com",
-    });
-  });
-
-  it("should reject when no session provided", async () => {
-    // Arrange
-    const authMiddleware = makeAuthMiddleware(sessionManager);
-
-    // Act
-    await authMiddleware(mockReq as Request, mockRes as Response, nextFunction);
-
-    // Assert
-    expect(nextFunction).not.toHaveBeenCalled();
-    expect(mockRes.status).toHaveBeenCalledWith(401);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      error: "No session provided",
-      redirect: "/login",
-    });
-  });
-
-  it("should reject invalid session", async () => {
-    // Arrange
-    mockReq.headers = {
-      authorization: "Bearer invalid-token",
+      expiresAt: expiresAt,
     };
-    sessionManager.getSession.mockResolvedValue(null);
-    const authMiddleware = makeAuthMiddleware(sessionManager);
+    sessionManager.getSession.mockResolvedValue(mockSession);
+  const authMiddleware = makeAuthMiddleware(sessionManager);
 
-    // Act
-    await authMiddleware(mockReq as Request, mockRes as Response, nextFunction);
+  // Act
+  await authMiddleware(mockReq as Request, mockRes as Response, nextFunction);
 
-    // Assert
-    expect(nextFunction).not.toHaveBeenCalled();
-    expect(mockRes.status).toHaveBeenCalledWith(401);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      error: "Invalid session",
-      redirect: "/login",
-    });
+  // Assert
+  expect(sessionManager.getSession).toHaveBeenCalledWith("Bearer valid-token");
+  expect(nextFunction).toHaveBeenCalled();
+  expect(mockRes.status).not.toHaveBeenCalled();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  expect(mockReq.body["user"]).toEqual(mockSession);
+});
+
+it("should reject when no session provided", async () => {
+  // Arrange
+  const authMiddleware = makeAuthMiddleware(sessionManager);
+
+  // Act
+  await authMiddleware(mockReq as Request, mockRes as Response, nextFunction);
+
+  // Assert
+  expect(nextFunction).not.toHaveBeenCalled();
+  expect(mockRes.status).toHaveBeenCalledWith(401);
+  expect(mockRes.json).toHaveBeenCalledWith({
+    error: "No session provided",
+    redirect: "/login",
   });
+});
 
-  it("should handle unexpected errors", async () => {
-    // Arrange
-    mockReq.headers = {
-      authorization: "Bearer valid-token",
-    };
-    sessionManager.getSession.mockRejectedValue(new Error("Unexpected error"));
-    const authMiddleware = makeAuthMiddleware(sessionManager);
+it("should reject invalid session", async () => {
+  // Arrange
+  mockReq.headers = {
+    authorization: "Bearer invalid-token",
+  };
+  sessionManager.getSession.mockResolvedValue(null);
+  const authMiddleware = makeAuthMiddleware(sessionManager);
 
-    // Act
-    await authMiddleware(mockReq as Request, mockRes as Response, nextFunction);
+  // Act
+  await authMiddleware(mockReq as Request, mockRes as Response, nextFunction);
 
-    // Assert
-    expect(nextFunction).not.toHaveBeenCalled();
-    expect(mockRes.status).toHaveBeenCalledWith(401);
-    expect(mockRes.json).toHaveBeenCalledWith({
-      error: "Authentication failed",
-      redirect: "/login",
-    });
+  // Assert
+  expect(nextFunction).not.toHaveBeenCalled();
+  expect(mockRes.status).toHaveBeenCalledWith(401);
+  expect(mockRes.json).toHaveBeenCalledWith({
+    error: "Invalid session",
+    redirect: "/login",
   });
+});
+
+it("should handle unexpected errors", async () => {
+  // Arrange
+  mockReq.headers = {
+    authorization: "Bearer valid-token",
+  };
+  sessionManager.getSession.mockRejectedValue(new Error("Unexpected error"));
+  const authMiddleware = makeAuthMiddleware(sessionManager);
+
+  // Act
+  await authMiddleware(mockReq as Request, mockRes as Response, nextFunction);
+
+  // Assert
+  expect(nextFunction).not.toHaveBeenCalled();
+  expect(mockRes.status).toHaveBeenCalledWith(401);
+  expect(mockRes.json).toHaveBeenCalledWith({
+    error: "Authentication failed",
+    redirect: "/login",
+  });
+});
 });

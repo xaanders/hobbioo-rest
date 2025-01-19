@@ -61,8 +61,8 @@ describe('InMemorySessionManager', () => {
             const session = await sessionManager.getSession(sessionId);
 
             expect(session).toBeDefined();
-            expect(session?.user.user.email).toBe(mockUser.email);
-            expect(session?.user.user.user_id).toBe(mockUser.user_id);
+            expect(session?.user.email).toBe(mockUser.email);
+            expect(session?.user.user_id).toBe(mockUser.user_id);
         });
 
         it('should return null for expired session', async () => {

@@ -14,21 +14,19 @@ export class InMemorySessionManager implements ISessionManager {
 
     const userJson = user.toJson();
     this.sessions.set(sessionId, {
+      session: userSession,
       user: {
-        session: userSession,
-        user: {
-          user_id: userJson.user_id,
-          first_name: userJson.first_name,
-          last_name: userJson.last_name,
-          email: userJson.email,
-          user_type: userJson.user_type,
-          createdAt: userJson.created_at,
-          updatedAt: userJson.updated_at,
-        },
+        user_id: userJson.user_id,
+        first_name: userJson.first_name,
+        last_name: userJson.last_name,
+        email: userJson.email,
+        user_type: userJson.user_type,
+        createdAt: userJson.created_at,
+        updatedAt: userJson.updated_at,
       },
       expiresAt: expiresAt,
     });
-    
+
     return sessionId;
   }
 
