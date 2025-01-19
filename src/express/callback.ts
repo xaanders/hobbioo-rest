@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { IHelpers } from "../app/helpers/IHelpers.js";
 import { handleError } from "./error-handler.js";
+import { Session } from "../app/auth/types.js";
 
 export type HttpResponse = {
   headers?: Record<string, string>;
@@ -10,9 +11,7 @@ export type HttpResponse = {
 
 export type HttpRequest = {
   body: {
-    user: {
-      [key: string]: any;
-    };
+    user?: Session;
     [key: string]: any;
   };
   query: any;

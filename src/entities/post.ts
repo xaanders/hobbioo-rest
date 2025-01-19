@@ -79,7 +79,6 @@ export class Post {
     image_id: string;
     created_at: string;
     updated_at: string;
-    status: number;
   } {
     return Object.freeze({
       post_id: this._post_id,
@@ -89,7 +88,6 @@ export class Post {
       image_id: this._image_id,
       created_at: this._created_at,
       updated_at: this._updated_at,
-      status: this._status,
     });
   }
 

@@ -17,7 +17,7 @@ export class InMemorySessionManager implements ISessionManager {
       user: {
         session: userSession,
         user: {
-          id: userJson.user_id,
+          user_id: userJson.user_id,
           first_name: userJson.first_name,
           last_name: userJson.last_name,
           email: userJson.email,

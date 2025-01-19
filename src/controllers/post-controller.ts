@@ -1,4 +1,5 @@
 // src/controllers/post-controller.ts
+import { Session } from "../app/auth/types.js";
 import { Post } from "../entities/post.js";
 import { HttpRequest, HttpResponse } from "../express/callback.js";
 
@@ -7,17 +8,22 @@ type CreatePostFn = ({ title, description, user_id, image_id }: { title: string,
 export const createPostController =
     (createPost: CreatePostFn) =>
         async (httpRequest: HttpRequest): Promise<HttpResponse> => {
-            const user = httpRequest.body.user;
+            const { user } = httpRequest.body.user as Session;
 
             const { title, description } = httpRequest.body;
-            //TODO: check user_type === 2 
+
+            const user_type = user.user.user_type;
+
+            if(user_type !== 2)
+                return { statusCode: 403, body: { error: "User is not a provider" } };
+
             //TODO: upload image and get image_id
             const image_id = "123";
 
             const post = await createPost({
                 title: title as string,
                 description: description as string,
-                user_id: user['custom:user_id'] as string,
+                user_id: user.user.user_id,
                 image_id: image_id as string
             });
 
