@@ -53,6 +53,7 @@ export const createRouter = () => {
   const userRoutes = makeUserRoutes(userRepository, helpers, rateLimitMiddleware, authMiddleware);
   const authRoutes = makeAuthRoutes(
     cognitoAuth,
+    sessionManager,
     userRepository,
     helpers,
     rateLimitMiddleware,

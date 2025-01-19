@@ -10,11 +10,11 @@ import {
   ConfirmSignUpCommandOutput,
 } from "@aws-sdk/client-cognito-identity-provider";
 import jwt from "jsonwebtoken";
-import { ISessionManager } from "../../gateways/session-manager.js";
 import { createPublicKey } from "crypto";
 import axios from "axios";
-import { UserSession } from "../../shared/types.js";
+import { UserSession } from "./types.js";
 import { AuthError } from "../../shared/error/auth-error.js";
+import { ISessionManager, ICognitoAuth } from "./interfaces.js";
 
 interface JWK {
   kid: string;
@@ -27,18 +27,7 @@ interface JWK {
 
 const cachedKeys: { [key: string]: string } = {};
 
-export interface ICognitoAuth {
-  authenticateUser(username: string, password: string): Promise<string>;
-  registerUser(user: {
-    username: string;
-    password: string;
-    id: string;
-    name: string;
-  }): Promise<SignUpCommandOutput>;
-  verifyToken(token: string): Promise<any>;
-  confirmEmail(username: string, code: string): Promise<ConfirmSignUpCommandOutput>;
-  logoutUser(sessionId: string): Promise<void>;
-}
+
 
 export function createCognitoAuth(
   cognito: CognitoIdentityProvider,
@@ -90,7 +79,7 @@ export function createCognitoAuth(
     });
   }
 
-  async function authenticateUser(username: string, password: string): Promise<string> {
+  async function authenticateUser(username: string, password: string): Promise<{ session: UserSession, expiresIn: number }> {
     const params = {
       AuthFlow: "USER_PASSWORD_AUTH",
       ClientId: clientId,
@@ -113,9 +102,8 @@ export function createCognitoAuth(
         "No response.AuthenticationResult?.ExpiresIn found"
       );
 
-    const sessionId = await sessionManager.createSession(decoded as UserSession, expiresIn);
 
-    return sessionId;
+    return { session: decoded, expiresIn: expiresIn };
   }
 
   async function registerUser(user: {

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Request, Response, NextFunction } from "express";
-import { ISessionManager } from "../../gateways/session-manager.js";
+import { ISessionManager } from "./interfaces.js";
 import { InvalidOrExpiredSessionError } from "../../shared/error/auth-error.js";
 
 const makeAuthMiddleware = (sessionManager: ISessionManager) => {

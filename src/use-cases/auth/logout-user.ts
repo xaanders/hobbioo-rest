@@ -1,4 +1,4 @@
-import { ICognitoAuth } from "../../app/auth/cognito-service.js";
+import { ICognitoAuth } from "../../app/auth/interfaces.js";
 import { AuthError } from "../../shared/error/auth-error.js";
 
 export const logoutUser =

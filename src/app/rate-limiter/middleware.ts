@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { createRateLimiter } from "./InMemoryRateLimiter.js";
 import { IHelpers } from "../helpers/IHelpers.js";
-import { UserSession } from "../../shared/types.js";
+import { UserSession } from "../auth/types.js";
 
 const makeRateLimitMiddleware = (helpers: IHelpers) => {
   const { rateLimit } = helpers.getSettings();

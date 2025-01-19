@@ -1,5 +1,5 @@
 import { NextFunction, Router, Request, Response } from "express";
-import { ICognitoAuth } from "../auth/cognito-service.js";
+import { ICognitoAuth, ISessionManager } from "../auth/interfaces.js";
 import { makeExpressCallback } from "../../express/callback.js";
 
 import {
@@ -19,6 +19,7 @@ import { IHelpers } from "../helpers/IHelpers.js";
 
 const makeAuthRoutes = (
   cognitoAuth: ICognitoAuth,
+  sessionManager: ISessionManager,
   userRepository: IUserRepository,
   helpers: IHelpers,
   rateLimitMiddleware: (req: Request, res: Response, next: NextFunction) => void,
@@ -28,7 +29,7 @@ const makeAuthRoutes = (
   const expressCallback = makeExpressCallback(helpers);
 
   //initialize use cases
-  const loginUserFlow = loginUser(cognitoAuth);
+  const loginUserFlow = loginUser(cognitoAuth, sessionManager, userRepository);
   const createUserFlow = createUser({ userRepository, helpers, cognitoAuth });
   const confirmUserEmailFlow = confirmUserEmail(cognitoAuth);
   const logoutUserFlow = logoutUser(cognitoAuth);

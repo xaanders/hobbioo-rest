@@ -3,7 +3,7 @@ import { User } from "../../entities/user.js";
 import { IHelpers } from "../../app/helpers/IHelpers.js";
 import { UseCaseError } from "../../shared/error/use-case-error.js";
 import { IUserRepository } from "../../gateways/user-repository.js";
-import { ICognitoAuth } from "../../app/auth/cognito-service.js";
+import { ICognitoAuth } from "../../app/auth/interfaces.js";
 import { AuthError } from "../../shared/error/auth-error.js";
 
 type CreateUserDTO = {

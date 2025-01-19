@@ -1,20 +1,34 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/require-await */
-import { ISessionManager } from "../../gateways/session-manager.js";
-import { Session, UserSession } from "../../shared/types.js";
 
+import { User } from "../../entities/user.js";
+import { ISessionManager } from "./interfaces.js";
+import { Session, UserSession } from "./types.js";
 export class InMemorySessionManager implements ISessionManager {
   private sessions: Map<string, Session> = new Map();
 
-  async createSession(userData: UserSession, expiresIn: number): Promise<string> {
+  async createSession(userSession: UserSession, user: User, expiresIn: number): Promise<string> {
     const sessionId = crypto.randomUUID();
 
-    const expiresAt = userData.exp ? userData.exp * 1000 : Date.now() + expiresIn;
+    const expiresAt = userSession.exp ? userSession.exp * 1000 : Date.now() + expiresIn;
 
+    const userJson = user.toJson();
     this.sessions.set(sessionId, {
-      user: userData,
+      user: {
+        session: userSession,
+        user: {
+          id: userJson.user_id,
+          first_name: userJson.first_name,
+          last_name: userJson.last_name,
+          email: userJson.email,
+          user_type: userJson.user_type,
+          createdAt: userJson.created_at,
+          updatedAt: userJson.updated_at,
+        },
+      },
       expiresAt: expiresAt,
     });
+    
     return sessionId;
   }
 
@@ -34,3 +48,4 @@ export class InMemorySessionManager implements ISessionManager {
     this.sessions.delete(sessionId);
   }
 }
+
