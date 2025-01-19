@@ -21,3 +21,9 @@ export const mockCognitoAuth = {
   logoutUser: jest.fn(),
   verifyToken: jest.fn(),
 };
+
+export const mockSessionManager = {
+  createSession: jest.fn(),
+  getSession: jest.fn(),
+  removeSession: jest.fn(),
+};
