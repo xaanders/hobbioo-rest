@@ -1,7 +1,6 @@
 import { InMemorySessionManager } from '../../../app/auth/session-manager.js';
 import { User } from '../../../entities/user.js';
 import { UserSession } from '../../../app/auth/types.js';
-import { mockHelpers } from '../../mocks/dependencies.js';
 
 describe('InMemorySessionManager', () => {
     let sessionManager: InMemorySessionManager;
@@ -20,7 +19,7 @@ describe('InMemorySessionManager', () => {
             status: 1,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
-        }, mockHelpers
+        }
         );
 
         mockUserSession = {

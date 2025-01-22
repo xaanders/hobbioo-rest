@@ -24,7 +24,7 @@ describe("User Entity", () => {
 
   describe("Constructor", () => {
     it("should create a valid user", () => {
-      const user = new User(validUserData, mockHelpers);
+      const user = new User(validUserData);
       expect(user.toJson()).toEqual(
         expect.objectContaining({
           user_id: validUserData.user_id,
@@ -32,12 +32,15 @@ describe("User Entity", () => {
           last_name: validUserData.last_name,
           email: validUserData.email,
           user_type: validUserData.user_type,
+          status: validUserData.status,
+          created_at: validUserData.created_at,
+          updated_at: validUserData.updated_at,
         })
       );
     });
 
     it("should handle null input", () => {
-      const user = new User(null, mockHelpers);
+      const user = new User(null);
       expect(user.user_id).toBe("");
     });
   });
@@ -45,37 +48,43 @@ describe("User Entity", () => {
   describe("Validation", () => {
     it("should throw on empty first name", () => {
       expect(() => {
-        new User({ ...validUserData, first_name: "" }, mockHelpers);
+        const user = new User({ ...validUserData, first_name: "" });
+        user.validateUserFields();
       }).toThrow(ValidationError);
     });
 
     it("should throw on long first name", () => {
       expect(() => {
-        new User({ ...validUserData, first_name: "a".repeat(101) }, mockHelpers);
+        const user = new User({ ...validUserData, first_name: "a".repeat(101) });
+        user.validateUserFields();
       }).toThrow(ValidationError);
     });
 
     it("should throw on empty last name", () => {
       expect(() => {
-        new User({ ...validUserData, last_name: "" }, mockHelpers);
+        const user = new User({ ...validUserData, last_name: "" });
+        user.validateUserFields();
       }).toThrow(ValidationError);
     });
 
     it("should throw on long last name", () => {
       expect(() => {
-        new User({ ...validUserData, last_name: "a".repeat(101) }, mockHelpers);
+        const user = new User({ ...validUserData, last_name: "a".repeat(101) });
+        user.validateUserFields();
       }).toThrow(ValidationError);
     });
 
     it("should throw on invalid email", () => {
       expect(() => {
-        new User({ ...validUserData, email: "invalid-email" }, mockHelpers);
+        const user = new User({ ...validUserData, email: "invalid-email" });
+        user.validateUserFields();
       }).toThrow(ValidationError);
     });
 
     it("should throw on invalid user type", () => {
       expect(() => {
-        new User({ ...validUserData, user_type: 3 as 1 | 2 }, mockHelpers);
+        const user = new User({ ...validUserData, user_type: 3 as 1 | 2 });
+        user.validateUserFields();
       }).toThrow(ValidationError);
     });
   });
@@ -88,9 +97,9 @@ describe("User Entity", () => {
           first_name: "  John  ",
           last_name: "  Doe  ",
           email: "  john@example.com<br>  ",
-        },
-        mockHelpers
+        }
       );
+      user.sanitizeAndValidateUserInputs(mockHelpers);
 
       expect(user.first_name).toBe("John");
       expect(user.last_name).toBe("Doe");
@@ -99,36 +108,24 @@ describe("User Entity", () => {
   });
 
   describe("Update Validation", () => {
-    let user: User;
-
-    beforeEach(() => {
-      user = new User(validUserData, mockHelpers);
-    });
-
     it("should validate partial updates", () => {
-      const updateData = {
-        first_name: "Jane",
-        email: "jane@example.com",
-      };
 
-      const result = user.beforeUpdate(updateData, mockHelpers);
-      expect(result).toEqual(updateData);
+      const user = new User({user_id: "123", first_name: "Jane"});
+      const result = user.beforeUpdate(mockHelpers);
+
+      expect(result).toEqual({first_name: "Jane"});
     });
 
     it("should throw on empty update", () => {
+      const testUser = new User(null);
       expect(() => {
-        user.beforeUpdate({}, mockHelpers);
+        testUser.beforeUpdate(mockHelpers);
       }).toThrow("No fields to update");
     });
 
     it("should remove undefined fields", () => {
-      const result = user.beforeUpdate(
-        {
-          first_name: "Jane",
-          last_name: undefined,
-        },
-        mockHelpers
-      );
+      const user = new User({...validUserData, last_name: undefined});
+      const result = user.beforeUpdate(mockHelpers);
 
       expect(result).toHaveProperty("first_name");
       expect(result).not.toHaveProperty("last_name");
@@ -137,7 +134,7 @@ describe("User Entity", () => {
 
   describe("Immutability", () => {
     it("should return frozen object from toJson", () => {
-      const user = new User(validUserData, mockHelpers);
+      const user = new User(validUserData);
       const json = user.toJson();
 
       expect(Object.isFrozen(json)).toBe(true);

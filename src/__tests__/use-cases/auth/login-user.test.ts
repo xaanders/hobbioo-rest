@@ -1,7 +1,7 @@
 import { User } from "../../../entities/user.js";
 import { AuthError } from "../../../shared/error/auth-error.js";
 import { loginUser } from "../../../use-cases/auth/login-user.js";
-import { mockCognitoAuth, mockUserRepository, mockSessionManager, mockHelpers } from "../../mocks/dependencies.js";
+import { mockCognitoAuth, mockUserRepository, mockSessionManager } from "../../mocks/dependencies.js";
 
 describe("Login User Use Case", () => {
   const mockUser = new User({
@@ -13,7 +13,7 @@ describe("Login User Use Case", () => {
     status: 1,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
-  }, mockHelpers)
+  });
 
   beforeEach(() => {
     jest.clearAllMocks();
