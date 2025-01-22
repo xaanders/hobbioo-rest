@@ -1,50 +1,41 @@
 import { IHelpers } from "../app/helpers/IHelpers.js";
 import { ValidationError } from "../shared/error/validation-error.js";
+
+// Add type definitions for better type safety
+export type UserType = 1 | 2; // 1 - seeker, 2 - provider
+export type UserStatus = 1 | 0; // 1 - active, 0 - inactive
+
+export interface UserProps {
+  user_id: string;
+  first_name?: string;
+  last_name?: string;
+  email?: string;
+  user_type?: UserType;
+  status?: UserStatus;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export class User {
   private _user_id: string = "";
-  private _first_name: string = "";
-  private _last_name: string = "";
-  private _email: string = "";
-  private _user_type: 1 | 2 = 1; // 1 - seeker, 2 - provider
-  private _created_at: string = "";
-  private _updated_at: string = "";
-  private _status: 1 | 0 = 1; // 1 - active, 0 - inactive
+  private _first_name: string | undefined = undefined;
+  private _last_name: string | undefined = undefined;
+  private _email: string | undefined = undefined;
+  private _user_type: 1 | 2 | undefined = undefined; // 1 - seeker, 2 - provider
+  private _created_at: string | undefined = undefined;
+  private _updated_at: string | undefined = undefined;
+  private _status: 1 | 0 | undefined = undefined; // 1 - active, 0 - inactive
 
-  constructor(
-    data: {
-      user_id: string;
-      first_name: string;
-      last_name: string;
-      email: string;
-      user_type: 1 | 2;
-      status: 1 | 0;
-      created_at: string;
-      updated_at: string;
-    } | null,
-    helpers: IHelpers
-  ) {
+  // Add validation constants
+  private static readonly EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  constructor(data: UserProps | null) {
     if (!data) return;
 
-    const sanitizedData = this.sanitizeUserInputs(
-      {
-        first_name: data.first_name,
-        last_name: data.last_name,
-        email: data.email,
-      },
-      helpers
-    );
-    // Validate data
-    this.validateUserFields({
-      first_name: sanitizedData.first_name,
-      last_name: sanitizedData.last_name,
-      email: sanitizedData.email,
-      user_type: data.user_type,
-    });
-
     this._user_id = data.user_id;
-    this._first_name = sanitizedData.first_name;
-    this._last_name = sanitizedData.last_name;
-    this._email = sanitizedData.email;
+    this._first_name = data.first_name;
+    this._last_name = data.last_name;
+    this._email = data.email;
     this._user_type = data.user_type;
 
     this._status = data.status;
@@ -57,31 +48,31 @@ export class User {
     return this._user_id;
   }
 
-  get first_name(): string {
+  get first_name(): string | undefined {
     return this._first_name;
   }
 
-  get last_name(): string {
+  get last_name(): string | undefined {
     return this._last_name;
   }
 
-  get email(): string {
+  get email(): string | undefined {
     return this._email;
   }
 
-  get user_type(): 1 | 2 {
+  get user_type(): 1 | 2 | undefined {
     return this._user_type;
   }
 
-  get created_at(): string {
+  get created_at(): string | undefined {
     return this._created_at;
   }
 
-  get updated_at(): string {
+  get updated_at(): string | undefined {
     return this._updated_at;
   }
 
-  get status(): 1 | 0 {
+  get status(): 1 | 0 | undefined {
     return this._status;
   }
 
@@ -91,151 +82,133 @@ export class User {
     first_name: string;
     last_name: string;
     email: string;
-    user_type: 1 | 2;
-    created_at: string;
+    user_type: UserType;
+    status: UserStatus;
     updated_at: string;
+    created_at: string;
   } {
-    return Object.freeze({
+    const json = {
       user_id: this.user_id,
       first_name: this.first_name,
       last_name: this.last_name,
       email: this.email,
       user_type: this.user_type,
-      created_at: this.created_at,
+      status: this.status,
       updated_at: this.updated_at,
-    });
-  }
-
-  validateUserFields(data: {
-    user_id?: string;
-    first_name?: string;
-    last_name?: string;
-    email?: string;
-    user_type?: 1 | 2;
-  }): void {
-    if (!data.first_name) throw new ValidationError("First name is required");
-    
-    if (data.first_name.trim() === "") throw new ValidationError("First name cannot be empty");
-
-    if (data.first_name.length > propertiesLength.first_name)
-      throw new ValidationError(`First name cannot be longer than ${propertiesLength.first_name} characters`);
-
-    if (!data.last_name) throw new ValidationError("Last name is required");
-
-    if (data.last_name.trim() === "") throw new ValidationError("Last name cannot be empty");
-
-    if (data.last_name.length > propertiesLength.last_name) {
-      throw new ValidationError(
-        `Last name cannot be longer than ${propertiesLength.last_name} characters`
-      );
+      created_at: this.created_at
     }
-    if (!data.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))
+
+    if(Object.keys(json).some(key => json[key as keyof typeof json] === undefined)) {
+      throw new ValidationError("User is not fully initialized");
+    }
+
+    return Object.freeze({
+      user_id: this.user_id,
+      first_name: this.first_name as string,
+      last_name: this.last_name as string,
+      email: this.email as string,
+      user_type: this.user_type as UserType,
+      status: this.status as UserStatus,
+      updated_at: this.updated_at as string,
+      created_at: this.created_at as string
+    });
+
+  }
+
+  validateUserFields(): void {
+    this.validateName();
+    this.validateEmail();
+    this.validateUserType();
+  }
+
+  private validateName(): void {
+    if (!this.first_name?.trim()) {
+      throw new ValidationError("First name is required and cannot be empty");
+    }
+    if (!this.last_name?.trim()) {
+      throw new ValidationError("Last name is required and cannot be empty");
+    }
+
+    if (this.first_name.length > propertiesLength.first_name) {
+      throw new ValidationError(`First name cannot be longer than ${propertiesLength.first_name} characters`);
+    }
+    if (this.last_name.length > propertiesLength.last_name) {
+      throw new ValidationError(`Last name cannot be longer than ${propertiesLength.last_name} characters`);
+    }
+  }
+
+  validateEmail(): void {
+
+    if (!this.email) {
+      throw new ValidationError("Email is required");
+    }
+    if (!User.EMAIL_REGEX.test(this.email)) {
       throw new ValidationError("Invalid email format");
-
-    if (data.email.length > propertiesLength.email)
+    }
+    if (this.email.length > propertiesLength.email) {
       throw new ValidationError(`Email cannot be longer than ${propertiesLength.email} characters`);
-
-    if (data.user_type !== 1 && data.user_type !== 2) throw new ValidationError("Invalid user type");
+    }
   }
 
-  sanitizeUserInputs(
-    data: {
-      first_name: string;
-      last_name: string;
-      email: string;
-    },
-    helpers: IHelpers
-  ): {
-    first_name: string;
-    last_name: string;
-    email: string;
-  } {
-    return {
-      first_name: helpers.sanitize(data.first_name),
-      last_name: helpers.sanitize(data.last_name),
-      email: helpers.sanitize(data.email),
-    };
+  private validateUserType(): void {
+    if (this.user_type !== 1 && this.user_type !== 2) {
+      throw new ValidationError("Invalid user type. Must be 1 (seeker) or 2 (provider)");
+    }
   }
 
-  sanitizeUserFieldsForUpdate(
-    data: {
-      first_name?: string;
-      last_name?: string;
-      email?: string;
-    },
-    helpers: IHelpers
-  ): {
-    first_name?: string;
-    last_name?: string;
-    email?: string;
-  } {
-    return {
-      first_name: data.first_name ? helpers.sanitize(data.first_name) : undefined,
-      last_name: data.last_name ? helpers.sanitize(data.last_name) : undefined,
-      email: data.email ? helpers.sanitize(data.email) : undefined,
-    };
+  sanitizeUserInputs(helpers: IHelpers): void {
+    if(this._first_name) this._first_name = helpers.sanitize(this._first_name);
+    if(this._last_name) this._last_name = helpers.sanitize(this._last_name);
+    if(this._email) this._email = helpers.sanitize(this._email);
   }
 
-  validateUserFieldsForUpdate(data: {
-    first_name?: string;
-    last_name?: string;
-    email?: string;
-    user_type?: 1 | 2;
-  }): void {
-    if (data.first_name && data.first_name.trim() === "") {
+  sanitizeAndValidateUserInputs(helpers: IHelpers): void {
+    this.sanitizeUserInputs(helpers);
+    this.validateUserFields();
+  }
+
+  validateUserFieldsForUpdate(): void {
+    if (this.first_name && this.first_name.trim() === "") {
       throw new ValidationError("First name cannot be empty");
     }
-    if (data.last_name && data.last_name.trim() === "") {
+    if (this.last_name && this.last_name.trim() === "") {
       throw new ValidationError("Last name cannot be empty");
     }
-    if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+    if (this.email && !User.EMAIL_REGEX.test(this.email)) {
       throw new ValidationError("Invalid email format");
     }
-    if (data.user_type && data.user_type !== 1 && data.user_type !== 2) {
-      throw new ValidationError("Invalid user type");
-    }
+    // if (this.user_type !== 1 && this.user_type !== 2) {
+    //   throw new ValidationError("Invalid user type");
+    // }
   }
 
   beforeUpdate(
-    data: Partial<{ first_name: string; last_name: string; email: string; user_type: 1 | 2 }>,
     helpers: IHelpers
   ): {
     first_name?: string;
     last_name?: string;
-    email?: string;
   } {
-    this.validateUserFieldsForUpdate(data);
-    const sanitizedData = this.sanitizeUserFieldsForUpdate(data, helpers);
-    Object.keys(sanitizedData).forEach((key) => {
-      if (!sanitizedData[key as keyof typeof sanitizedData]) {
-        delete sanitizedData[key as keyof typeof sanitizedData];
+
+    if(!this._first_name && !this._last_name) {
+      throw new ValidationError("No fields to update");
+    }
+
+    this.validateUserFieldsForUpdate();
+    this.sanitizeUserInputs(helpers);
+
+    const data = {
+      first_name: this._first_name,
+      last_name: this._last_name,
+    }
+    
+    Object.keys(data).forEach((key) => {
+      if (!data[key as keyof typeof data]) {
+        delete data[key as keyof typeof data];
       }
     });
 
-    if (Object.keys(sanitizedData).length === 0) throw new ValidationError("No fields to update");
-
-    return sanitizedData;
+    return data;
   }
-  // Updating the entity with sanitization and validation
-  // update(
-  //   data: Partial<{ first_name: string; last_name: string; email: string; user_type: 1 | 2 }>,
-  //   helpers: IHelpers
-  // ) {
-  //   this.validateUpdate(data);
-
-  //   const sanitizedData = {
-  //     ...this,
-  //     ...data,
-  //   };
-  //   sanitizedData.first_name = helpers.sanitize(sanitizedData.first_name);
-  //   sanitizedData.last_name = helpers.sanitize(sanitizedData.last_name);
-  //   sanitizedData.email = helpers.sanitize(sanitizedData.email);
-
-  //   if (sanitizedData.first_name) this._first_name = sanitizedData.first_name;
-  //   if (sanitizedData.last_name) this._last_name = sanitizedData.last_name;
-  //   if (sanitizedData.email) this._email = sanitizedData.email;
-  //   if (sanitizedData.user_type) this._user_type = sanitizedData.user_type;
-  // }
 }
 
 const propertiesLength = {

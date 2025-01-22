@@ -36,12 +36,12 @@ export const createUser =
         status: 1,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-      },
-      helpers
+      }
     );
-
+    user.sanitizeAndValidateUserInputs(helpers);
+    
     const cognitoUser = await cognitoAuth.registerUser({
-      username: user.email,
+      username: user.email as string,
       password: userData.password,
       id: user.user_id,
       name: `${user.first_name} ${user.last_name}`,

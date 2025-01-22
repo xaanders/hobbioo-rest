@@ -40,7 +40,7 @@ const makeUserRoutes = (
   // Protected routes - apply middleware
   router.get("/", authMiddleware, rateLimitMiddleware, expressCallback(getUsersHandler));
   router.get("/:id", authMiddleware, rateLimitMiddleware, expressCallback(getUserHandler));
-  router.patch("/:id", authMiddleware, rateLimitMiddleware, expressCallback(updateUserHandler));
+  router.patch("/", authMiddleware, rateLimitMiddleware, expressCallback(updateUserHandler));
 
   return router;
 };

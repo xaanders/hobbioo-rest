@@ -1,4 +1,5 @@
 // src/controllers/user-controller.ts
+import { Session } from "../app/auth/types.js";
 import { User } from "../entities/user.js";
 import { HttpRequest, HttpResponse } from "../express/callback.js";
 // import { handleError } from "./error-handler.js";
@@ -19,25 +20,23 @@ type UpdateUserFn = (
     id: string;
     first_name: string;
     last_name: string;
-    email: string;
-    user_type: 1 | 2;
   }
 ) => Promise<Partial<User>>;
 
 export const updateUserController =
   (updateUser: UpdateUserFn) =>
   async (httpRequest: HttpRequest): Promise<HttpResponse> => {
-    const { id } = httpRequest.params as { id: string };
-    const { first_name, last_name, email, user_type } = httpRequest.body
-
-    const user = await updateUser(id, {
-      id,
+    const { user } = httpRequest.body.user as Session;
+    
+    const { first_name, last_name } = httpRequest.body
+    
+    const updatedUser = await updateUser(user.user_id, {
+      id: user.user_id,
       first_name: first_name as string,
       last_name: last_name as string,
-      email: email as string,
-      user_type: user_type as 1 | 2,
     });
-    return { statusCode: 200, body: user };
+
+    return { statusCode: 200, body: updatedUser };
   };
 
 type GetUsersFn = () => Promise<Partial<User>[]>;
