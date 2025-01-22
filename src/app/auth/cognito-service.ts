@@ -27,8 +27,6 @@ interface JWK {
 
 const cachedKeys: { [key: string]: string } = {};
 
-
-
 export function createCognitoAuth(
   cognito: CognitoIdentityProvider,
   sessionManager: ISessionManager,
@@ -79,7 +77,10 @@ export function createCognitoAuth(
     });
   }
 
-  async function authenticateUser(username: string, password: string): Promise<{ session: UserSession, expiresIn: number }> {
+  async function authenticateUser(
+    username: string,
+    password: string
+  ): Promise<{ session: UserSession; expiresIn: number }> {
     const params = {
       AuthFlow: "USER_PASSWORD_AUTH",
       ClientId: clientId,
@@ -101,7 +102,6 @@ export function createCognitoAuth(
         "Authentication failed",
         "No response.AuthenticationResult?.ExpiresIn found"
       );
-
 
     return { session: decoded, expiresIn: expiresIn };
   }

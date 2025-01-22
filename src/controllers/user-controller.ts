@@ -27,9 +27,9 @@ export const updateUserController =
   (updateUser: UpdateUserFn) =>
   async (httpRequest: HttpRequest): Promise<HttpResponse> => {
     const { user } = httpRequest.body.user as Session;
-    
-    const { first_name, last_name } = httpRequest.body
-    
+
+    const { first_name, last_name } = httpRequest.body;
+
     const updatedUser = await updateUser(user.user_id, {
       id: user.user_id,
       first_name: first_name as string,

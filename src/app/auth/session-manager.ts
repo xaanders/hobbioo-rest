@@ -46,4 +46,3 @@ export class InMemorySessionManager implements ISessionManager {
     this.sessions.delete(sessionId);
   }
 }
-

@@ -91,14 +91,12 @@ describe("User Entity", () => {
 
   describe("Sanitization", () => {
     it("should trim whitespace from inputs", () => {
-      const user = new User(
-        {
-          ...validUserData,
-          first_name: "  John  ",
-          last_name: "  Doe  ",
-          email: "  john@example.com<br>  ",
-        }
-      );
+      const user = new User({
+        ...validUserData,
+        first_name: "  John  ",
+        last_name: "  Doe  ",
+        email: "  john@example.com<br>  ",
+      });
       user.sanitizeAndValidateUserInputs(mockHelpers);
 
       expect(user.first_name).toBe("John");
@@ -109,11 +107,10 @@ describe("User Entity", () => {
 
   describe("Update Validation", () => {
     it("should validate partial updates", () => {
-
-      const user = new User({user_id: "123", first_name: "Jane"});
+      const user = new User({ user_id: "123", first_name: "Jane" });
       const result = user.beforeUpdate(mockHelpers);
 
-      expect(result).toEqual({first_name: "Jane"});
+      expect(result).toEqual({ first_name: "Jane" });
     });
 
     it("should throw on empty update", () => {
@@ -124,7 +121,7 @@ describe("User Entity", () => {
     });
 
     it("should remove undefined fields", () => {
-      const user = new User({...validUserData, last_name: undefined});
+      const user = new User({ ...validUserData, last_name: undefined });
       const result = user.beforeUpdate(mockHelpers);
 
       expect(result).toHaveProperty("first_name");

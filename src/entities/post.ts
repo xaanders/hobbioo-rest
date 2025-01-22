@@ -11,17 +11,18 @@ export class Post {
   private _created_at: string = "";
   private _updated_at: string = "";
 
-  constructor(data: {
-    post_id: string;
-    title: string;
-    description: string;
-    user_id: string;
-    image_id: string;
-    status: number;
-    created_at?: string;
-    updated_at?: string;
-  } | null) {
-    
+  constructor(
+    data: {
+      post_id: string;
+      title: string;
+      description: string;
+      user_id: string;
+      image_id: string;
+      status: number;
+      created_at?: string;
+      updated_at?: string;
+    } | null
+  ) {
     if (!data) return;
 
     this._post_id = data.post_id;
@@ -106,7 +107,6 @@ export class Post {
     this._description = helpers.sanitize(this._description);
     // this._user_id = helpers.sanitize(this._user_id);
     // this._image_id = helpers.sanitize(this._image_id);
-
   }
 
   sanitizeAndValidate(helpers: IHelpers): void {
@@ -114,4 +114,3 @@ export class Post {
     this.validatePostFields();
   }
 }
-

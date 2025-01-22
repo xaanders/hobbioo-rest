@@ -95,10 +95,10 @@ export class User {
       user_type: this.user_type,
       status: this.status,
       updated_at: this.updated_at,
-      created_at: this.created_at
-    }
+      created_at: this.created_at,
+    };
 
-    if(Object.keys(json).some(key => json[key as keyof typeof json] === undefined)) {
+    if (Object.keys(json).some((key) => json[key as keyof typeof json] === undefined)) {
       throw new ValidationError("User is not fully initialized");
     }
 
@@ -110,9 +110,8 @@ export class User {
       user_type: this.user_type as UserType,
       status: this.status as UserStatus,
       updated_at: this.updated_at as string,
-      created_at: this.created_at as string
+      created_at: this.created_at as string,
     });
-
   }
 
   validateUserFields(): void {
@@ -130,15 +129,18 @@ export class User {
     }
 
     if (this.first_name.length > propertiesLength.first_name) {
-      throw new ValidationError(`First name cannot be longer than ${propertiesLength.first_name} characters`);
+      throw new ValidationError(
+        `First name cannot be longer than ${propertiesLength.first_name} characters`
+      );
     }
     if (this.last_name.length > propertiesLength.last_name) {
-      throw new ValidationError(`Last name cannot be longer than ${propertiesLength.last_name} characters`);
+      throw new ValidationError(
+        `Last name cannot be longer than ${propertiesLength.last_name} characters`
+      );
     }
   }
 
   validateEmail(): void {
-
     if (!this.email) {
       throw new ValidationError("Email is required");
     }
@@ -157,9 +159,9 @@ export class User {
   }
 
   sanitizeUserInputs(helpers: IHelpers): void {
-    if(this._first_name) this._first_name = helpers.sanitize(this._first_name);
-    if(this._last_name) this._last_name = helpers.sanitize(this._last_name);
-    if(this._email) this._email = helpers.sanitize(this._email);
+    if (this._first_name) this._first_name = helpers.sanitize(this._first_name);
+    if (this._last_name) this._last_name = helpers.sanitize(this._last_name);
+    if (this._email) this._email = helpers.sanitize(this._email);
   }
 
   sanitizeAndValidateUserInputs(helpers: IHelpers): void {
@@ -182,14 +184,11 @@ export class User {
     // }
   }
 
-  beforeUpdate(
-    helpers: IHelpers
-  ): {
+  beforeUpdate(helpers: IHelpers): {
     first_name?: string;
     last_name?: string;
   } {
-
-    if(!this._first_name && !this._last_name) {
+    if (!this._first_name && !this._last_name) {
       throw new ValidationError("No fields to update");
     }
 
@@ -199,8 +198,8 @@ export class User {
     const data = {
       first_name: this._first_name,
       last_name: this._last_name,
-    }
-    
+    };
+
     Object.keys(data).forEach((key) => {
       if (!data[key as keyof typeof data]) {
         delete data[key as keyof typeof data];

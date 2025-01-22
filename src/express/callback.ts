@@ -54,7 +54,7 @@ export function makeExpressCallback(helpers: IHelpers) {
           res.status(httpResponse.statusCode).send(httpResponse.body);
         })
         .catch((e: any) => {
-          helpers.logger((e as Error).message || e as string, "error");
+          helpers.logger((e as Error).message || (e as string), "error");
           const error = handleError(e);
           res.status(error.statusCode).send(error.body);
         });

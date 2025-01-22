@@ -11,7 +11,6 @@ export const updateUser = ({
   helpers: IHelpers;
 }) => {
   return async (id: string, data: Partial<User>): Promise<Partial<User>> => {
-    
     const user = new User({
       user_id: id,
       first_name: data.first_name,
@@ -22,7 +21,7 @@ export const updateUser = ({
       created_at: data.created_at,
       updated_at: data.updated_at,
     });
-    
+
     const upd = user.beforeUpdate(helpers);
 
     const updatedUser = await userRepository.updateUser(id, upd as User);

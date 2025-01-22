@@ -43,7 +43,7 @@ export const createRouter = () => {
   // Initialize repositories
   const userRepository = createPrismaUserRepository(prisma);
   const postRepository = createPrismaPostRepository(prisma);
-  
+
   const authMiddleware = makeAuthMiddleware(sessionManager);
   const rateLimitMiddleware = makeRateLimitMiddleware(helpers);
 
@@ -63,7 +63,7 @@ export const createRouter = () => {
   // Register routes
   router.use("/auth", authRoutes);
   router.use("/users", userRoutes);
-  router.use("/posts", postRoutes)
+  router.use("/posts", postRoutes);
 
   return { router, prisma };
 };

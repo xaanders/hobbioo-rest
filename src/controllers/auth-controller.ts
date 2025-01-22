@@ -41,13 +41,13 @@ export const registerUserController =
   async (httpRequest: HttpRequest): Promise<HttpResponse> => {
     const { first_name, last_name, email, user_type, password } = httpRequest.body;
     try {
-      const user = await createUser({ 
+      const user = await createUser({
         first_name: first_name as string,
         last_name: last_name as string,
         email: email as string,
         user_type: user_type as 1 | 2,
-        password: password as string
-       });
+        password: password as string,
+      });
       return { statusCode: 201, body: user };
     } catch (error) {
       if (error instanceof AuthError) helpers.logger(`Register user: ${error.debug}`, "error");

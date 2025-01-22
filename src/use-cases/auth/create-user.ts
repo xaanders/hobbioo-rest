@@ -26,20 +26,18 @@ export const createUser =
   }) =>
   async (userData: CreateUserDTO) => {
     const id = helpers.generateId();
-    const user = new User(
-      {
-        user_id: id,
-        first_name: userData.first_name,
-        last_name: userData.last_name,
-        email: userData.email,
-        user_type: userData.user_type,
-        status: 1,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      }
-    );
+    const user = new User({
+      user_id: id,
+      first_name: userData.first_name,
+      last_name: userData.last_name,
+      email: userData.email,
+      user_type: userData.user_type,
+      status: 1,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    });
     user.sanitizeAndValidateUserInputs(helpers);
-    
+
     const cognitoUser = await cognitoAuth.registerUser({
       username: user.email as string,
       password: userData.password,

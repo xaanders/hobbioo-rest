@@ -7,10 +7,10 @@ import { createPostController, getPostController } from "../../controllers/post-
 import { getPost } from "../../use-cases/post/get-post.js";
 
 const makePostRoutes = (
-    postRepository: IPostRepository,
-    helpers: IHelpers,
-    rateLimitMiddleware: (req: Request, res: Response, next: NextFunction) => void,
-    authMiddleware: (req: Request, res: Response, next: NextFunction) => Promise<void>
+  postRepository: IPostRepository,
+  helpers: IHelpers,
+  rateLimitMiddleware: (req: Request, res: Response, next: NextFunction) => void,
+  authMiddleware: (req: Request, res: Response, next: NextFunction) => Promise<void>
 ) => {
   const router = Router();
   const expressCallback = makeExpressCallback(helpers);

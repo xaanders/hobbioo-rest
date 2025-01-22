@@ -1,7 +1,11 @@
 import { User } from "../../../entities/user.js";
 import { AuthError } from "../../../shared/error/auth-error.js";
 import { loginUser } from "../../../use-cases/auth/login-user.js";
-import { mockCognitoAuth, mockUserRepository, mockSessionManager } from "../../mocks/dependencies.js";
+import {
+  mockCognitoAuth,
+  mockUserRepository,
+  mockSessionManager,
+} from "../../mocks/dependencies.js";
 
 describe("Login User Use Case", () => {
   const mockUser = new User({
@@ -21,7 +25,7 @@ describe("Login User Use Case", () => {
 
   it("should successfully login a user", async () => {
     const mockToken = "mock-session-token";
-    const authUserSession = {session: {}, expiresIn: 123}
+    const authUserSession = { session: {}, expiresIn: 123 };
 
     mockCognitoAuth.authenticateUser.mockResolvedValue(authUserSession);
     mockUserRepository.getUser.mockResolvedValue(mockUser);
@@ -70,7 +74,7 @@ describe("Login User Use Case", () => {
   });
 
   it("should throw AuthError when user is not found", async () => {
-    const authUserSession = {session: {}, expiresIn: 123}
+    const authUserSession = { session: {}, expiresIn: 123 };
     mockCognitoAuth.authenticateUser.mockResolvedValue(authUserSession);
     mockUserRepository.getUser.mockResolvedValue(null);
 
@@ -81,5 +85,4 @@ describe("Login User Use Case", () => {
       "User not found"
     );
   });
-  
 });
