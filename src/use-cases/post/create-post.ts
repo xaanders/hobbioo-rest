@@ -25,7 +25,7 @@ export const createPost =
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     });
-    post.sanitizeAndValidate(helpers);
+    post.sanitizeAndValidatePostInputs(helpers);
 
     const createdPost = await postRepository.createPost(post);
 

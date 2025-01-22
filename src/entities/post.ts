@@ -1,28 +1,34 @@
 import { IHelpers } from "../app/helpers/IHelpers.js";
 import { ValidationError } from "../shared/error/validation-error.js";
 
+export type PostStatus = 1 | 0; // 1 - active, 0 - inactive
+
+export interface PostProps {
+  post_id: string;
+  title?: string;
+  description?: string;
+  user_id: string;
+  image_id?: string;
+  status?: PostStatus;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export class Post {
   private _post_id: string = "";
-  private _title: string = "";
-  private _description: string = "";
+  private _title?: string = undefined;
+  private _description?: string = undefined;
   private _user_id: string = "";
-  private _image_id: string = "";
-  private _status: number = 1;
-  private _created_at: string = "";
-  private _updated_at: string = "";
+  private _image_id?: string = undefined;
+  private _status?: number = undefined;
+  private _created_at?: string = undefined;
+  private _updated_at?: string = undefined;
 
-  constructor(
-    data: {
-      post_id: string;
-      title: string;
-      description: string;
-      user_id: string;
-      image_id: string;
-      status: number;
-      created_at?: string;
-      updated_at?: string;
-    } | null
-  ) {
+  // Add validation constants
+  private static readonly MAX_TITLE_LENGTH = 200;
+  private static readonly MAX_DESCRIPTION_LENGTH = 2000;
+
+  constructor(data: PostProps | null) {
     if (!data) return;
 
     this._post_id = data.post_id;
@@ -44,11 +50,11 @@ export class Post {
     return this._post_id;
   }
 
-  get title(): string {
+  get title(): string | undefined {
     return this._title;
   }
 
-  get description(): string {
+  get description(): string | undefined {
     return this._description;
   }
 
@@ -56,19 +62,19 @@ export class Post {
     return this._user_id;
   }
 
-  get image_id(): string {
+  get image_id(): string | undefined {
     return this._image_id;
   }
 
-  get created_at(): string {
+  get created_at(): string | undefined {
     return this._created_at;
   }
 
-  get updated_at(): string {
+  get updated_at(): string | undefined {
     return this._updated_at;
   }
 
-  get status(): number {
+  get status(): number | undefined {
     return this._status;
   }
 
@@ -78,39 +84,108 @@ export class Post {
     description: string;
     user_id: string;
     image_id: string;
+    status: PostStatus;
     created_at: string;
     updated_at: string;
   } {
-    return Object.freeze({
+    const json = {
       post_id: this._post_id,
       title: this._title,
       description: this._description,
       user_id: this._user_id,
       image_id: this._image_id,
+      status: this._status,
       created_at: this._created_at,
       updated_at: this._updated_at,
+    };
+
+    if (Object.keys(json).some((key) => json[key as keyof typeof json] === undefined)) {
+      throw new ValidationError("Post is not fully initialized");
+    }
+
+    return Object.freeze({
+      post_id: this._post_id,
+      title: this._title as string,
+      description: this._description as string,
+      user_id: this._user_id,
+      image_id: this._image_id as string,
+      status: this._status as PostStatus,
+      created_at: this._created_at as string,
+      updated_at: this._updated_at as string,
     });
   }
 
   validatePostFields(): void {
+    this.validateTitle();
+    this.validateDescription();
+    this.validateRequiredFields();
+  }
+
+  private validateTitle(): void {
+    if (!this._title?.trim()) {
+      throw new ValidationError("Title is required and cannot be empty");
+    }
+    if (this._title.length > Post.MAX_TITLE_LENGTH) {
+      throw new ValidationError(`Title cannot be longer than ${Post.MAX_TITLE_LENGTH} characters`);
+    }
+  }
+
+  private validateDescription(): void {
+    if (!this._description?.trim()) {
+      throw new ValidationError("Description is required and cannot be empty");
+    }
+    if (this._description.length > Post.MAX_DESCRIPTION_LENGTH) {
+      throw new ValidationError(`Description cannot be longer than ${Post.MAX_DESCRIPTION_LENGTH} characters`);
+    }
+  }
+
+  private validateRequiredFields(): void {
     if (!this._post_id) throw new ValidationError("Post ID is required");
-    if (!this._title) throw new ValidationError("Title is required");
-    if (this._title.length > 200) throw new ValidationError("Title is too long");
-    if (!this._description) throw new ValidationError("Description is required");
-    if (this._description.length > 2000) throw new ValidationError("Description is too long");
     if (!this._user_id) throw new ValidationError("User ID is required");
     if (!this._image_id) throw new ValidationError("Image ID is required");
   }
 
-  sanitize(helpers: IHelpers): void {
-    this._title = helpers.sanitize(this._title);
-    this._description = helpers.sanitize(this._description);
-    // this._user_id = helpers.sanitize(this._user_id);
-    // this._image_id = helpers.sanitize(this._image_id);
+  sanitizePostInputs(helpers: IHelpers): void {
+    if (this._title) this._title = helpers.sanitize(this._title);
+    if (this._description) this._description = helpers.sanitize(this._description);
   }
 
-  sanitizeAndValidate(helpers: IHelpers): void {
-    this.sanitize(helpers);
+  sanitizeAndValidatePostInputs(helpers: IHelpers): void {
+    this.sanitizePostInputs(helpers);
     this.validatePostFields();
+  }
+
+  validatePostFieldsForUpdate(): void {
+    if (this._title && this._title.trim() === "") {
+      throw new ValidationError("Title cannot be empty");
+    }
+    if (this._description && this._description.trim() === "") {
+      throw new ValidationError("Description cannot be empty");
+    }
+  }
+
+  beforeUpdate(helpers: IHelpers): {
+    title?: string;
+    description?: string;
+  } {
+    if (!this._title && !this._description) {
+      throw new ValidationError("No fields to update");
+    }
+
+    this.validatePostFieldsForUpdate();
+    this.sanitizePostInputs(helpers);
+
+    const data = {
+      title: this._title,
+      description: this._description,
+    };
+
+    Object.keys(data).forEach((key) => {
+      if (!data[key as keyof typeof data]) {
+        delete data[key as keyof typeof data];
+      }
+    });
+
+    return data;
   }
 }

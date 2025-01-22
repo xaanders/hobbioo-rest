@@ -4,16 +4,17 @@ import { Post } from "../../entities/post.js";
 
 const createPrismaPostRepository = (prisma: PrismaClient): IPostRepository => ({
   async createPost(post: Post): Promise<Post> {
+    const json = post.toJson();
     const createdPost = await prisma.post.create({
       data: {
-        post_id: post.post_id,
-        title: post.title,
-        description: post.description,
-        user_id: post.user_id,
-        image_id: post.image_id,
-        status: post.status,
-        created_at: post.created_at,
-        updated_at: post.updated_at,
+        post_id: json.post_id,
+        title: json.title,
+        description: json.description,
+        user_id: json.user_id,
+        image_id: json.image_id,
+        status: json.status,
+        created_at: json.created_at,
+        updated_at: json.updated_at,
       },
     });
 
@@ -23,7 +24,7 @@ const createPrismaPostRepository = (prisma: PrismaClient): IPostRepository => ({
       description: createdPost.description,
       user_id: createdPost.user_id,
       image_id: createdPost.image_id,
-      status: createdPost.status,
+      status: createdPost.status as 0 | 1,
       created_at: createdPost.created_at.toISOString(),
       updated_at: createdPost.updated_at.toISOString(),
     });
@@ -44,7 +45,7 @@ const createPrismaPostRepository = (prisma: PrismaClient): IPostRepository => ({
       image_id: post.image_id,
       created_at: post.created_at.toISOString(),
       updated_at: post.updated_at.toISOString(),
-      status: post.status,
+      status: post.status as 0 | 1,
     });
   },
 
@@ -65,7 +66,7 @@ const createPrismaPostRepository = (prisma: PrismaClient): IPostRepository => ({
       description: updatedPost.description,
       user_id: updatedPost.user_id,
       image_id: updatedPost.image_id,
-      status: updatedPost.status,
+      status: updatedPost.status as 0 | 1,
       created_at: updatedPost.created_at.toISOString(),
       updated_at: updatedPost.updated_at.toISOString(),
     });
@@ -94,7 +95,7 @@ const createPrismaPostRepository = (prisma: PrismaClient): IPostRepository => ({
           description: post.description,
           user_id: post.user_id,
           image_id: post.image_id,
-          status: post.status,
+          status: post.status as 0 | 1,
           created_at: post.created_at.toISOString(),
           updated_at: post.updated_at.toISOString(),
         })
