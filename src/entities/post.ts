@@ -25,8 +25,8 @@ export class Post {
   private _updated_at?: string = undefined;
 
   // Add validation constants
-  private static readonly MAX_TITLE_LENGTH = 200;
-  private static readonly MAX_DESCRIPTION_LENGTH = 2000;
+  static readonly MAX_TITLE_LENGTH = 200;
+  static readonly MAX_DESCRIPTION_LENGTH = 2000;
 
   constructor(data: PostProps | null) {
     if (!data) return;
@@ -116,9 +116,9 @@ export class Post {
   }
 
   validatePostFields(): void {
+    this.validateRequiredFields();
     this.validateTitle();
     this.validateDescription();
-    this.validateRequiredFields();
   }
 
   private validateTitle(): void {

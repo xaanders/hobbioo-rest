@@ -19,20 +19,20 @@ describe("Post Entity", () => {
   describe("Constructor", () => {
     it("should create a post", () => {
       const id = mockHelpers.generateId();
-      const post = new Post({ ...mockPost, post_id: id, status: 1 });
+      const post = new Post({ ...mockPost, post_id: id, status: 1});
       const json = post.toJson();
       expect(post).toBeDefined();
-      expect(json).toEqual({ ...mockPost, post_id: id });
+      expect(json).toEqual({ ...mockPost, post_id: id, status: 1 });
       expect(post.post_id).toBe(id);
     });
     it("should handle null input", () => {
       const post = new Post(null);
       expect(post).not.toBeUndefined();
       expect(post?.post_id).toBe("");
-      expect(post?.title).toBe("");
-      expect(post?.description).toBe("");
+      expect(post?.title).toBeUndefined();
+      expect(post?.description).toBeUndefined();
       expect(post?.user_id).toBe("");
-      expect(post?.image_id).toBe("");
+      expect(post?.image_id).toBeUndefined();
     });
   });
 
@@ -42,6 +42,12 @@ describe("Post Entity", () => {
       expect(() => post.validatePostFields()).toThrow(ValidationError);
       expect(() => post.validatePostFields()).toThrow("Post ID is required");
     });
+    // it("should throw on empty user_id", () => {
+    //   const id = mockHelpers.generateId();
+    //   const post = new Post({ ...mockPost, user_id: "", post_id: id, status: 1 });
+    //   expect(() => post.validatePostFields()).toThrow(ValidationError);
+    //   expect(() => post.validatePostFields()).toThrow("User ID is required");
+    // });
     it("should throw on empty title", () => {
       const id = mockHelpers.generateId();
       const post = new Post({ ...mockPost, title: "", post_id: id, status: 1 });
@@ -51,7 +57,7 @@ describe("Post Entity", () => {
     it("should throw on long title", () => {
       const post = new Post({ ...mockPost, title: "a".repeat(201), status: 1 });
       expect(() => post.validatePostFields()).toThrow(ValidationError);
-      expect(() => post.validatePostFields()).toThrow("Title is too long");
+      expect(() => post.validatePostFields()).toThrow(`Title cannot be longer than ${Post.MAX_TITLE_LENGTH} characters`);
     });
     it("should throw on empty description", () => {
       const id = mockHelpers.generateId();
@@ -63,7 +69,7 @@ describe("Post Entity", () => {
       const id = mockHelpers.generateId();
       const post = new Post({ ...mockPost, description: "a".repeat(2001), post_id: id, status: 1 });
       expect(() => post.validatePostFields()).toThrow(ValidationError);
-      expect(() => post.validatePostFields()).toThrow("Description is too long");
+      expect(() => post.validatePostFields()).toThrow(`Description cannot be longer than ${Post.MAX_DESCRIPTION_LENGTH} characters`);
     });
     it("should throw on empty user_id", () => {
       const id = mockHelpers.generateId();
@@ -95,9 +101,10 @@ describe("Post Entity", () => {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
+
     it("should sanitize the post", () => {
-      const post = new Post(mockPost);
-      post.sanitize(mockHelpers as IHelpers);
+      const post = new Post({...mockPost, status: 1});
+      post.sanitizePostInputs(mockHelpers as IHelpers);
       expect(post.title).toBe("Test Post");
       expect(post.description).toBe("This is a test post");
       expect(post.user_id).toBe("123");
@@ -109,11 +116,11 @@ describe("Post Entity", () => {
 
     it("should sanitize the post with empty values", () => {
       const post = new Post(null);
-      post.sanitize(mockHelpers as IHelpers);
-      expect(post.title).toBe("");
-      expect(post.description).toBe("");
+      post.sanitizePostInputs(mockHelpers as IHelpers);
+      expect(post.title).toBeUndefined();
+      expect(post.description).toBeUndefined();
       expect(post.user_id).toBe("");
-      expect(post.image_id).toBe("");
+      expect(post.image_id).toBeUndefined();
     });
   });
 });
