@@ -78,3 +78,13 @@ export const getPostsController = (getPosts: GetPostsFn) => async (): Promise<Ht
     const posts = await getPosts();
     return { statusCode: 200, body: posts };
 };
+
+type DeletePostFn = (id: string, user_id: string) => Promise<{message: string}>;
+
+export const deletePostController = (deletePost: DeletePostFn) => async (httpRequest: HttpRequest): Promise<HttpResponse> => {
+    const { id } = httpRequest.params as { id: string };
+    const { user } = httpRequest.body.user as Session;
+
+    const statusMessage = await deletePost(id, user.user_id);
+    return { statusCode: 200, body: statusMessage };
+};

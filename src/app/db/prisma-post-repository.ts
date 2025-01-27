@@ -72,7 +72,7 @@ const createPrismaPostRepository = (prisma: PrismaClient): IPostRepository => ({
     });
   },
 
-  async deletePost(id: string, user_id: string): Promise<void> {
+  async deletePost(id: string, user_id: string): Promise<boolean> {
     await prisma.post.update({
       where: { post_id: id, user_id: user_id },
       data: {
@@ -80,6 +80,8 @@ const createPrismaPostRepository = (prisma: PrismaClient): IPostRepository => ({
         updated_at: new Date(),
       },
     });
+
+    return true;
   },
 
   async getPosts(): Promise<Post[]> {
