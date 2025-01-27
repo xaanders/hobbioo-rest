@@ -20,6 +20,7 @@ import { helpers } from "../helpers/helpers.js";
 // middleware
 import makeAuthMiddleware from "../auth/middleware.js";
 import makeRateLimitMiddleware from "../rate-limiter/middleware.js";
+import { makeExpressCallback } from "../../express/callback.js";
 
 export const createRouter = () => {
   const router = Router();
@@ -40,6 +41,8 @@ export const createRouter = () => {
     process.env.COGNITO_CLIENT_ID!
   );
 
+  const expressCallback = makeExpressCallback(helpers);
+
   // Initialize repositories
   const userRepository = createPrismaUserRepository(prisma);
   const postRepository = createPrismaPostRepository(prisma);
@@ -49,15 +52,16 @@ export const createRouter = () => {
 
   // Initialize routes
 
-  const postRoutes = makePostRoutes(postRepository, helpers, rateLimitMiddleware, authMiddleware);
-  const userRoutes = makeUserRoutes(userRepository, helpers, rateLimitMiddleware, authMiddleware);
+  const postRoutes = makePostRoutes(postRepository, helpers, rateLimitMiddleware, authMiddleware, expressCallback);
+  const userRoutes = makeUserRoutes(userRepository, helpers, rateLimitMiddleware, authMiddleware, expressCallback);
   const authRoutes = makeAuthRoutes(
     cognitoAuth,
     sessionManager,
     userRepository,
     helpers,
     rateLimitMiddleware,
-    authMiddleware
+    authMiddleware,
+    expressCallback
   );
 
   // Register routes

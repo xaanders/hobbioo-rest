@@ -68,9 +68,9 @@ export const getPostController =
 //             return { statusCode: 200, body: post };
 //         };
 
-// type GetPostsFn = () => Promise<Partial<Post>[]>;
+type GetPostsFn = () => Promise<Partial<Post>[]>;
 
-// export const getPostsController = (getPosts: GetPostsFn) => async (): Promise<HttpResponse> => {
-//     const posts = await getPosts();
-//     return { statusCode: 200, body: posts };
-// };
+export const getPostsController = (getPosts: GetPostsFn) => async (): Promise<HttpResponse> => {
+    const posts = await getPosts();
+    return { statusCode: 200, body: posts };
+};

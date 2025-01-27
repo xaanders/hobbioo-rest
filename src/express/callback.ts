@@ -27,6 +27,8 @@ export type HttpRequest = {
   };
 };
 
+export type CallbackType = (controller: (httpRequest: HttpRequest) => Promise<HttpResponse>) => (req: Request, res: Response) => void;
+
 export function makeExpressCallback(helpers: IHelpers) {
   return (controller: (httpRequest: HttpRequest) => Promise<HttpResponse>) => {
     return (req: Request, res: Response) => {

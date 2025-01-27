@@ -1,6 +1,6 @@
 import { NextFunction, Router, Request, Response } from "express";
 import { ICognitoAuth, ISessionManager } from "../auth/interfaces.js";
-import { makeExpressCallback } from "../../express/callback.js";
+import { CallbackType } from "../../express/callback.js";
 
 import {
   loginController,
@@ -23,10 +23,10 @@ const makeAuthRoutes = (
   userRepository: IUserRepository,
   helpers: IHelpers,
   rateLimitMiddleware: (req: Request, res: Response, next: NextFunction) => void,
-  authMiddleware: (req: Request, res: Response, next: NextFunction) => Promise<void>
+  authMiddleware: (req: Request, res: Response, next: NextFunction) => Promise<void>,
+  expressCallback: CallbackType
 ) => {
   const router = Router();
-  const expressCallback = makeExpressCallback(helpers);
 
   //initialize use cases
   const loginUserFlow = loginUser(cognitoAuth, sessionManager, userRepository);

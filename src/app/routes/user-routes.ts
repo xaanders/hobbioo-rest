@@ -8,7 +8,7 @@ import {
 import { getUser } from "../../use-cases/user/get-user.js";
 import { getUsers } from "../../use-cases/user/get-users.js";
 import { updateUser } from "../../use-cases/user/update-user.js";
-import { makeExpressCallback } from "../../express/callback.js";
+import { CallbackType } from "../../express/callback.js";
 import { IUserRepository } from "../../gateways/user-repository.js";
 import { IHelpers } from "../helpers/IHelpers.js";
 
@@ -16,12 +16,11 @@ const makeUserRoutes = (
   userRepository: IUserRepository,
   helpers: IHelpers,
   rateLimitMiddleware: (req: Request, res: Response, next: NextFunction) => void,
-  authMiddleware: (req: Request, res: Response, next: NextFunction) => Promise<void>
+  authMiddleware: (req: Request, res: Response, next: NextFunction) => Promise<void>,
+  expressCallback: CallbackType
 ) => {
   const router = Router();
 
-  // Initialize middleware
-  const expressCallback = makeExpressCallback(helpers);
   // Compose the use cases
   // const createUserFlow = createUser({ userRepository, helpers });
   const getUserFlow = getUser({ userRepository });
