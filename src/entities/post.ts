@@ -159,8 +159,17 @@ export class Post {
     if (this._title && this._title.trim() === "") {
       throw new ValidationError("Title cannot be empty");
     }
+    
+    if(this._title && this._title.trim().length > Post.MAX_TITLE_LENGTH) {
+      throw new ValidationError(`Title cannot be longer than ${Post.MAX_TITLE_LENGTH} characters`);
+    }
+
     if (this._description && this._description.trim() === "") {
       throw new ValidationError("Description cannot be empty");
+    }
+
+    if (this._description && this._description.trim().length > Post.MAX_DESCRIPTION_LENGTH) {
+      throw new ValidationError(`Description cannot be longer than ${Post.MAX_DESCRIPTION_LENGTH} characters`);
     }
   }
 
@@ -168,6 +177,7 @@ export class Post {
     title?: string;
     description?: string;
   } {
+    
     if (!this._title && !this._description) {
       throw new ValidationError("No fields to update");
     }
