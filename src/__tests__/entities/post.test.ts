@@ -123,4 +123,46 @@ describe("Post Entity", () => {
       expect(post.image_id).toBeUndefined();
     });
   });
+
+  describe("Update Validation", () => {
+    it("should validate partial updates", () => {
+      const post = new Post({ ...mockPost, description: "", title: "New Title" });
+      const result = post.beforeUpdate(mockHelpers as IHelpers);
+
+      expect(result).toEqual({ title: "New Title" });
+    });
+    it("should throw on empty update", () => {
+      const post = new Post(null);
+      expect(() => post.beforeUpdate(mockHelpers as IHelpers)).toThrow(ValidationError);
+      expect(() => post.beforeUpdate(mockHelpers as IHelpers)).toThrow("No fields to update");
+    });
+    it("should remove undefined fields", () => {
+      const post = new Post({ ...mockPost, description: undefined });
+      const result = post.beforeUpdate(mockHelpers as IHelpers);
+
+      expect(result).toHaveProperty("title");
+      expect(result).not.toHaveProperty("description");
+    });
+    it("should throw on invalid title", () => {
+      const post = new Post({ ...mockPost, title: "a".repeat(201) });
+      expect(() => post.beforeUpdate(mockHelpers as IHelpers)).toThrow(ValidationError);
+      expect(() => post.beforeUpdate(mockHelpers as IHelpers)).toThrow(`Title cannot be longer than ${Post.MAX_TITLE_LENGTH} characters`);
+    });
+    it("should throw on invalid description", () => {
+      const post = new Post({ ...mockPost, description: "a".repeat(2001) });
+      expect(() => post.beforeUpdate(mockHelpers as IHelpers)).toThrow(ValidationError);
+      expect(() => post.beforeUpdate(mockHelpers as IHelpers)).toThrow(`Description cannot be longer than ${Post.MAX_DESCRIPTION_LENGTH} characters`);
+    });
+    it("should not throw on valid update", () => {
+      const post = new Post({ ...mockPost, title: "New Title", description: "New Description" });
+      expect(() => post.beforeUpdate(mockHelpers as IHelpers)).not.toThrow();
+    });
+
+    it("should sanitize the post", () => {
+      const post = new Post({ ...mockPost, description: "   <br/>   ", title: "   <br/>   " });
+      post.sanitizePostInputs(mockHelpers as IHelpers);
+      expect(post.title).toBe("");
+      expect(post.description).toBe("");
+    });
+  });
 });
