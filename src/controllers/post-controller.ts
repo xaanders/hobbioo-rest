@@ -47,26 +47,30 @@ export const getPostController =
     return { statusCode: 200, body: post };
   };
 
-// type UpdatePostFn = (
-//     id: string,
-//     data: {
-//         title: string;
-//         description: string;
-//     }
-// ) => Promise<Partial<Post>>;
+type UpdatePostFn = (
+    id: string,
+    data: {
+        title: string;
+        description: string;
+        user_id: string;
+    }
+) => Promise<Partial<Post>>;
 
-// export const updatePostController =
-//     (updatePost: UpdatePostFn) =>
-//         async (httpRequest: HttpRequest): Promise<HttpResponse> => {
-//             const { id } = httpRequest.params as { id: string };
-//             const { title, description } = httpRequest.body;
+export const updatePostController =
+    (updatePost: UpdatePostFn) =>
+        async (httpRequest: HttpRequest): Promise<HttpResponse> => {
+            const { id } = httpRequest.params as { id: string };
+            const { title, description } = httpRequest.body;
+            const { user } = httpRequest.body.user as Session;
 
-//             const post = await updatePost(id, {
-//                 title: title as string,
-//                 description: description as string,
-//             });
-//             return { statusCode: 200, body: post };
-//         };
+            const post = await updatePost(id, {
+                title: title as string,
+                description: description as string,
+                user_id: user.user_id,
+            });
+            
+            return { statusCode: 200, body: post };
+        };
 
 type GetPostsFn = () => Promise<Partial<Post>[]>;
 
