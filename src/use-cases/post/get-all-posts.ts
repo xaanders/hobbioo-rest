@@ -5,7 +5,7 @@ import { IPostRepository } from "../../gateways/post-repository.js";
 export const getAllPosts =
   ({ postRepository }: { postRepository: IPostRepository }) =>
   async (): Promise<Partial<Post>[]> => {
-    const posts = await postRepository.getPosts();
+    const posts = await postRepository.getAllPosts();
 
     return posts.map((post) => post.toJson());
   };

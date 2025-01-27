@@ -4,7 +4,6 @@ import { updatePost } from "../../use-cases/post/update-post.js";
 import { getAllPosts } from "../../use-cases/post/get-all-posts.js";
 import { Post, PostProps } from "../../entities/post.js";
 import { UseCaseError } from "../../shared/error/use-case-error.js";
-import { IPostRepository } from "../../gateways/post-repository.js";
 import { IHelpers } from "../../app/helpers/IHelpers.js";
 
 describe("Post Use Cases", () => {
@@ -37,8 +36,10 @@ describe("Post Use Cases", () => {
     createPost: jest.fn(),
     getPost: jest.fn(),
     updatePost: jest.fn(),
-    getPosts: jest.fn(),
     deletePost: jest.fn(),
+    getActivePosts: jest.fn(),
+    getUserPosts: jest.fn(),
+    getAllPosts: jest.fn(),
   };
 
   beforeEach(() => {
@@ -140,24 +141,25 @@ describe("Post Use Cases", () => {
   describe("getAllPosts", () => {
     it("should get all posts", async () => {
       const mockPosts = [new Post(mockPost as PostProps), new Post({ ...mockPost, post_id: "test-id-2" } as PostProps)];
-      mockPostRepository.getPosts.mockResolvedValue(mockPosts);
+      mockPostRepository.getAllPosts.mockResolvedValue(mockPosts);
 
       const getAllPostsUseCase = getAllPosts({ postRepository: mockPostRepository });
       const result = await getAllPostsUseCase();
 
       expect(result).toHaveLength(2);
       expect(result[0]).toEqual(mockPost);
-      expect(mockPostRepository.getPosts).toHaveBeenCalled();
+      expect(mockPostRepository.getAllPosts).toHaveBeenCalled();
     });
 
     it("should return empty array when no posts exist", async () => {
-      mockPostRepository.getPosts.mockResolvedValue([]);
+      mockPostRepository.getAllPosts.mockResolvedValue([]);
 
       const getAllPostsUseCase = getAllPosts({ postRepository: mockPostRepository });
       const result = await getAllPostsUseCase();
 
       expect(result).toHaveLength(0);
-      expect(mockPostRepository.getPosts).toHaveBeenCalled();
+      expect(mockPostRepository.getAllPosts).toHaveBeenCalled();
     });
   });
 });
+

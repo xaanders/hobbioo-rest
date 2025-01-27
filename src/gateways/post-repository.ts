@@ -5,5 +5,7 @@ export interface IPostRepository {
   getPost: (id: string) => Promise<Post | null>;
   updatePost: (id: string, data: Post) => Promise<Post>;
   deletePost: (id: string, user_id: string) => Promise<boolean>;
-  getPosts: () => Promise<Post[]>;
+  getActivePosts: () => Promise<Post[]>;
+  getUserPosts: (user_id: string) => Promise<Post[]>;
+  getAllPosts: () => Promise<Post[]>;
 }

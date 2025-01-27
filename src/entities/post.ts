@@ -3,6 +3,7 @@ import { ValidationError } from "../shared/error/validation-error.js";
 
 export type PostStatus = 1 | 0; // 1 - active, 0 - inactive
 
+export type ProcessingStatus = 0 | 1 | 2; // 0 - pending, 1 - approved, 2 - rejected
 export interface PostProps {
   post_id: string;
   title?: string;
@@ -10,6 +11,8 @@ export interface PostProps {
   user_id: string;
   image_id?: string;
   status?: PostStatus;
+  is_active?: boolean;
+  processing_status?: ProcessingStatus; 
   created_at?: string;
   updated_at?: string;
 }
@@ -21,6 +24,8 @@ export class Post {
   private _user_id: string = "";
   private _image_id?: string = undefined;
   private _status?: number = undefined;
+  private _is_active?: boolean = undefined;
+  private _processing_status?: number = undefined;
   private _created_at?: string = undefined;
   private _updated_at?: string = undefined;
 
@@ -37,6 +42,8 @@ export class Post {
     this._user_id = data.user_id;
     this._image_id = data.image_id;
     this._status = data.status;
+    this._is_active = data.is_active;
+    this._processing_status = data.processing_status;
 
     const timeNow = new Date().toISOString();
 
@@ -56,6 +63,14 @@ export class Post {
 
   get description(): string | undefined {
     return this._description;
+  }
+
+  get is_active(): boolean | undefined {
+    return this._is_active;
+  }
+
+  get processing_status(): number | undefined {
+    return this._processing_status;
   }
 
   get user_id(): string {
