@@ -28,6 +28,8 @@ model Post {
   user_id String 
   image_id String @db.VarChar(50)
   status Int @default(1)
+  is_active Boolean @default(true)
+  processing_status Int @default(0)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 }
